@@ -32,7 +32,7 @@ main{max-width:980px}
 </div>
 <div class="grid">
   <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
-  <div class="card"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub">Support line (≈0.46× fair value)</div></div>
+  <div class="card"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub">Fair value × 0.42</div></div>
   <div class="card"><div class="lbl">Power-law fair value</div><div class="big" id="fair">—</div><div class="sub" id="fairrel"></div></div>
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
@@ -41,7 +41,7 @@ main{max-width:980px}
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
   <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
   <div>Power law (Santostasi / Giovannetti), d = days since genesis block 2009‑01‑03:
-  fair value = <code>10^(−17.016) × d^5.84</code>; floor = <code>10^(−17.351) × d^5.84</code>. Model is descriptive, not a forecast or financial advice.</div>
+  fair value = <code>1.0117×10<sup>−17</sup> × d<sup>5.82</sup></code>; floor = <code>fair value × 0.42</code> (standard power law as published by BGeometrics / bitcoinfairprice.com). Model is descriptive, not a forecast or financial advice.</div>
 </footer>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -64,7 +64,7 @@ async function update(){
 }
 function render(p,abs,pct,name){
  const d=(Date.now()-GEN)/DAY, ld=Math.log10(d);
- const fair=10**(-17.016+5.84*ld), floor=10**(-17.351+5.84*ld);
+ const fair=1.0117e-17*10**(5.82*ld), floor=fair*0.42;
  $('price').textContent=usd(p,2);
  const up=abs>=0;$('chg').className='chg '+(up?'up':'dn');
  $('chg').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(abs),2)} (${up?'+':'−'}${Math.abs(pct).toFixed(2)}%) · 24h`;
@@ -77,7 +77,7 @@ function render(p,abs,pct,name){
  $('upd').textContent=new Date().toLocaleTimeString();$('src').textContent=name;
 }
 
-const plv=(t,b)=>10**(b+5.84*Math.log10((t-GEN)/DAY));
+const plv=(t,k)=>k*1.0117e-17*((t-GEN)/DAY)**5.82;
 let chart,hist=[];
 async function initChart(){
  try{hist=await j('history.json')}catch(e){console.warn('history',e)}
@@ -92,10 +92,10 @@ async function initChart(){
  const FV='#f7931a',FL='#58a6ff';
  const ds=[
   {label:'BTC daily close (USD)',data:hist.map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
-  {label:'Power-law fair value: 10^−17.016 × d^5.84',data:line(past,-17.016),borderColor:FV,borderWidth:1.8,pointRadius:0},
-  {label:'Power-law floor (support): 10^−17.351 × d^5.84',data:line(past,-17.351),borderColor:FL,borderWidth:1.8,pointRadius:0},
-  {label:'Fair value — projection',data:line(fut,-17.016),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
-  {label:'Floor — projection',data:line(fut,-17.351),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
+  {label:'Power-law fair value: 1.0117e-17 × d^5.82',data:line(past,1),borderColor:FV,borderWidth:1.8,pointRadius:0},
+  {label:'Power-law floor: fair value × 0.42',data:line(past,0.42),borderColor:FL,borderWidth:1.8,pointRadius:0},
+  {label:'Fair value — projection',data:line(fut,1),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
+  {label:'Floor — projection',data:line(fut,0.42),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
  const sma=[];let acc=0;for(let i=0;i<hist.length;i++){acc+=hist[i][1];if(i>=200)acc-=hist[i-200][1];if(i>=199)sma.push({x:hist[i][0],y:acc/200})}
  ds.splice(1,0,{label:'200-day SMA',data:sma,borderColor:'#2aa198',borderWidth:1.4,pointRadius:0});
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
