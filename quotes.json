@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-10-28T11:58:58Z",
+ "fetchedUtc": "2026-10-28T12:01:57Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -9,7 +9,7 @@
    "price": 99.51,
    "change": 0.02,
    "changePct": 0.02,
-   "asOf": "Oct 28, 2026 7:58 AM ET",
+   "asOf": "Oct 28, 2026 8:00 AM ET",
    "realTime": true,
    "status": "Pre-Market"
   },
@@ -23,6 +23,18 @@
    "asOf": "Oct 28, 2026 7:51 AM ET",
    "realTime": true,
    "status": "Pre-Market"
+  },
+  "IBIT": {
+   "symbol": "IBIT",
+   "name": "iShares Bitcoin Trust ETF",
+   "exchange": "NASDAQ-GM",
+   "price": 45.9801,
+   "change": 0.2801,
+   "changePct": 0.61,
+   "asOf": "Oct 28, 2026 8:01 AM ET",
+   "realTime": true,
+   "status": "Pre-Market",
+   "source": "Nasdaq"
   },
   "IBIT_C50_2028-06": {
    "symbol": "IBIT280616C00050000",

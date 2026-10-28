@@ -6,8 +6,8 @@ SYMS = ["STRC", "SATA"]
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 def num(s):
     return float(str(s).replace("$", "").replace(",", "").replace("%", "").replace("+", "")) if s not in (None, "", "N/A") else None
-def quote(sym):
-    req = urllib.request.Request(f"https://api.nasdaq.com/api/quote/{sym}/info?assetclass=stocks",
+def quote(sym, assetclass="stocks"):
+    req = urllib.request.Request(f"https://api.nasdaq.com/api/quote/{sym}/info?assetclass={assetclass}",
                                  headers={"User-Agent": UA, "Accept": "application/json"})
     d = json.load(urllib.request.urlopen(req, timeout=20))["data"]
     p = d["primaryData"]
@@ -22,6 +22,11 @@ def option_quote():
     req = urllib.request.Request("https://cdn.cboe.com/api/global/delayed_quotes/options/IBIT.json",
                                  headers={"User-Agent": UA, "Accept": "application/json"})
     d = json.load(urllib.request.urlopen(req, timeout=30))
+    u = d["data"]
+    if "IBIT" not in out["quotes"] and u.get("current_price"):
+        out["quotes"]["IBIT"] = {"symbol": "IBIT", "name": "iShares Bitcoin Trust ETF", "price": u["current_price"],
+            "change": u.get("price_change"), "changePct": u.get("price_change_percent"),
+            "asOf": (u.get("last_trade_time") or "") + " ET", "status": "15-min delayed (CBOE)", "source": "CBOE"}
     o = next(x for x in d["data"]["options"] if x["option"] == OPT_SYM)
     return {"symbol": OPT_SYM, "name": "IBIT Jun 16 '28 $50 Call", "underlying": "IBIT",
             "underlyingPrice": d["data"].get("current_price"), "strike": 50.0, "expiry": "2028-06-16", "type": "call",
@@ -35,6 +40,10 @@ for s in SYMS:
         out["quotes"][s] = quote(s)
     except Exception as e:
         print(f"{s}: {e}", file=sys.stderr)
+try:  # IBIT ETF: Nasdaq first, CBOE chain underlying as fallback (set below)
+    out["quotes"]["IBIT"] = dict(quote("IBIT", "etf"), source="Nasdaq")
+except Exception as e:
+    print(f"IBIT (Nasdaq): {e}", file=sys.stderr)
 try:
     out["quotes"][OPT_KEY] = option_quote()
 except Exception as e:  # fail soft: stocks still get written

@@ -20,7 +20,7 @@ footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color
 .chart{height:460px;position:relative}.chart canvas{width:100%!important}
 @media(max-width:600px){.chart{height:340px}}
 main{max-width:980px}
-.tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}
+.tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -34,7 +34,7 @@ main{max-width:980px}
 <div class="grid stocks">
   <div class="card" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
   <div class="card" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
-  <div class="card" id="q-OPT"><div class="tk"><b>IBIT Jun 16 '28 $50 Call</b><span class="sub" style="font-size:11px">15-min delayed</span></div><div class="nm" data-f="nm">IBIT280616C00050000 · iShares Bitcoin Trust</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div><div class="nm" data-f="ba"></div></div>
+  <div class="card" id="q-OPT"><div class="tk"><b>IBIT Jun 16 '28 $50 Call</b><span class="sub" style="font-size:11px">15-min delayed</span></div><div class="nm" data-f="nm">IBIT280616C00050000 · iShares Bitcoin Trust</div><div class="ul" data-f="ul">IBIT —</div><div class="nm" data-f="uls" style="white-space:normal"></div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div><div class="nm" data-f="ba"></div></div>
 </div>
 <div class="grid">
   <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
@@ -142,8 +142,18 @@ async function updateQuotes(){
    if(o.change!=null&&o.changePct!=null){const up=o.change>=0;f('c').className='qc '+(up?'up':'dn');
     f('c').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(o.change),2)} (${up?'+':'−'}${Math.abs(o.changePct).toFixed(2)}%) · last session`}
    else{f('c').className='qc';f('c').textContent='change n/a'}
-   f('ba').textContent=`Bid ${o.bid!=null?usd(o.bid,2):'—'} / Ask ${o.ask!=null?usd(o.ask,2):'—'}`+(o.underlyingPrice?` · IBIT ${usd(o.underlyingPrice,2)}`:'')+(o.openInterest?` · OI ${o.openInterest.toLocaleString()}`:'');
+   f('ba').textContent=`Bid ${o.bid!=null?usd(o.bid,2):'—'} / Ask ${o.ask!=null?usd(o.ask,2):'—'}`+(o.openInterest?` · OI ${o.openInterest.toLocaleString()}`:'');
   }}
+
+ {const el=$('q-OPT'),f=k=>el.querySelector(`[data-f="${k}"]`),u=q&&q.quotes&&q.quotes.IBIT,o=q&&q.quotes&&q.quotes['IBIT_C50_2028-06'];
+  const up0=u&&u.price>0?u:(o&&o.underlyingPrice>0?{price:o.underlyingPrice,status:'15-min delayed (CBOE)'}:null);
+  if(!up0){f('ul').textContent='IBIT quote unavailable';f('uls').textContent=''}
+  else{const K=50,d=(up0.price-K)/K*100;
+   let h=`IBIT ${usd(up0.price,2)}`;
+   if(up0.change!=null&&up0.changePct!=null){const up=up0.change>=0;h+=` <small class="${up?'up':'dn'}">${up?'▲ +':'▼ −'}${usd(Math.abs(up0.change),2)} (${up?'+':'−'}${Math.abs(up0.changePct).toFixed(2)}%)</small>`}
+   f('ul').innerHTML=h;
+   f('uls').textContent=`${Math.abs(d).toFixed(1)}% ${d<0?'below':'above'} $50 strike`+(up0.asOf?` · as of ${up0.asOf}`:'')+(up0.status?` · ${up0.status}`:'');}
+ }
  $('qupd').textContent=q&&q.fetchedUtc?'stock quotes fetched '+new Date(q.fetchedUtc).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}):'stock quotes unavailable';
 }
 update();updateQuotes();setInterval(()=>{update();updateQuotes()},60000);
