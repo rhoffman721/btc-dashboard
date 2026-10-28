@@ -103,13 +103,15 @@ async function initChart(){
  for(let t=start;t<now;t+=7*DAY)past.push(t);past.push(now);
  for(let t=now;t<end;t+=14*DAY)fut.push(t);fut.push(end);
  const line=(ts,b)=>ts.map(t=>({x:t,y:plv(t,b)}));
- const FV='#f7931a',FL='#58a6ff';
+ const FV='#f7931a',FL='#58a6ff',UB='#f85149';
  const ds=[
   {label:'BTC daily close (USD)',data:hist.filter(([x])=>x>=start).map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
   {label:'Power-law fair value: 1.0117e-17 × d^5.82',data:line(past,1),borderColor:FV,borderWidth:1.8,pointRadius:0},
   {label:'Power-law floor: fair value × 0.42',data:line(past,0.42),borderColor:FL,borderWidth:1.8,pointRadius:0},
+  {label:'Upper bound (2.4x fair value)',data:line(past,2.4),borderColor:UB,borderWidth:1.8,pointRadius:0},
   {label:'Fair value — projection',data:line(fut,1),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
-  {label:'Floor — projection',data:line(fut,0.42),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
+  {label:'Floor — projection',data:line(fut,0.42),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
+  {label:'Upper bound — projection',data:line(fut,2.4),borderColor:UB+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
  const sma=[];let acc=0;for(let i=0;i<hist.length;i++){acc+=hist[i][1];if(i>=200)acc-=hist[i-200][1];if(i>=199&&hist[i][0]>=start)sma.push({x:hist[i][0],y:acc/200})}
  ds.splice(1,0,{label:'200-day SMA',data:sma,borderColor:'#2aa198',borderWidth:1.4,pointRadius:0});
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
