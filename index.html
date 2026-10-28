@@ -41,13 +41,13 @@ main{max-width:980px}
   <div class="card"><div class="lbl">Power-law fair value</div><div class="big" id="fair">—</div><div class="sub" id="fairrel"></div></div>
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
-<div class="card"><div class="lbl" style="margin-bottom:10px">Price history vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div></div>
+<div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
 <footer>
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
-  <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
+  <div>History: daily USD price from blockchain.com (chart shows 2020‑01‑01 onward; 200‑day SMA computed from full history) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
   <div>Stocks: Nasdaq quote data, fetched every ~5 min on weekdays by a GitHub Action into quotes.json (delayed by up to the fetch interval); IBIT option: CBOE public delayed quotes (15-min delayed), same file; <span id="qupd">—</span>.</div>
   <div>Power law (Santostasi / Giovannetti), d = days since genesis block 2009‑01‑03:
   fair value = <code>1.0117×10<sup>−17</sup> × d<sup>5.82</sup></code>; floor = <code>fair value × 0.42</code> (standard power law as published by BGeometrics / bitcoinfairprice.com). Model is descriptive, not a forecast or financial advice.</div>
@@ -98,19 +98,19 @@ async function initChart(){
  try{const d=await j('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90&interval=daily');
   const last=hist.length?hist[hist.length-1][0]:0;
   for(const [t,p] of d.prices) if(t>last+DAY/2) hist.push([t,p]);}catch(e){console.warn('cg chart',e)}
- const now=Date.now(),end=Date.UTC(2030,11,31),start=Date.UTC(2010,6,1);
+ const now=Date.now(),end=Date.UTC(2030,11,31),start=Date.UTC(2020,0,1);
  const past=[],fut=[];
  for(let t=start;t<now;t+=7*DAY)past.push(t);past.push(now);
  for(let t=now;t<end;t+=14*DAY)fut.push(t);fut.push(end);
  const line=(ts,b)=>ts.map(t=>({x:t,y:plv(t,b)}));
  const FV='#f7931a',FL='#58a6ff';
  const ds=[
-  {label:'BTC daily close (USD)',data:hist.map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
+  {label:'BTC daily close (USD)',data:hist.filter(([x])=>x>=start).map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
   {label:'Power-law fair value: 1.0117e-17 × d^5.82',data:line(past,1),borderColor:FV,borderWidth:1.8,pointRadius:0},
   {label:'Power-law floor: fair value × 0.42',data:line(past,0.42),borderColor:FL,borderWidth:1.8,pointRadius:0},
   {label:'Fair value — projection',data:line(fut,1),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
   {label:'Floor — projection',data:line(fut,0.42),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
- const sma=[];let acc=0;for(let i=0;i<hist.length;i++){acc+=hist[i][1];if(i>=200)acc-=hist[i-200][1];if(i>=199)sma.push({x:hist[i][0],y:acc/200})}
+ const sma=[];let acc=0;for(let i=0;i<hist.length;i++){acc+=hist[i][1];if(i>=200)acc-=hist[i-200][1];if(i>=199&&hist[i][0]>=start)sma.push({x:hist[i][0],y:acc/200})}
  ds.splice(1,0,{label:'200-day SMA',data:sma,borderColor:'#2aa198',borderWidth:1.4,pointRadius:0});
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
  chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},
@@ -120,7 +120,7 @@ async function initChart(){
     tooltip:{callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
      label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
    scales:{x:{type:'time',min:start,max:end,time:{unit:'year'},title:{display:true,text:'Date'}},
-    y:{type:'logarithmic',min:0.01,title:{display:true,text:'Price (USD, log scale)'},
+    y:{type:'logarithmic',min:1000,title:{display:true,text:'Price (USD, log scale)'},
      ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?usd(v,v<1?2:0):''}}}}}});
 }
 function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
