@@ -34,6 +34,7 @@ main{max-width:980px}
 <div class="grid stocks">
   <div class="card" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
   <div class="card" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
+  <div class="card" id="q-OPT"><div class="tk"><b>IBIT Jun 16 '28 $50 Call</b><span class="sub" style="font-size:11px">15-min delayed</span></div><div class="nm" data-f="nm">IBIT280616C00050000 · iShares Bitcoin Trust</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div><div class="nm" data-f="ba"></div></div>
 </div>
 <div class="grid">
   <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
@@ -45,7 +46,7 @@ main{max-width:980px}
 <footer>
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
   <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
-  <div>Stocks: Nasdaq quote data, fetched every ~5 min on weekdays by a GitHub Action into quotes.json (delayed by up to the fetch interval); <span id="qupd">—</span>.</div>
+  <div>Stocks: Nasdaq quote data, fetched every ~5 min on weekdays by a GitHub Action into quotes.json (delayed by up to the fetch interval); IBIT option: CBOE public delayed quotes (15-min delayed), same file; <span id="qupd">—</span>.</div>
   <div>Power law (Santostasi / Giovannetti), d = days since genesis block 2009‑01‑03:
   fair value = <code>1.0117×10<sup>−17</sup> × d<sup>5.82</sup></code>; floor = <code>fair value × 0.42</code> (standard power law as published by BGeometrics / bitcoinfairprice.com). Model is descriptive, not a forecast or financial advice.</div>
 </footer>
@@ -129,6 +130,20 @@ async function updateQuotes(){
   const up=d.change>=0;f('c').className='qc '+(up?'up':'dn');
   f('c').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(d.change),2)} (${up?'+':'−'}${Math.abs(d.changePct).toFixed(2)}%)`;
  }
+
+ {const el=$('q-OPT'),f=k=>el.querySelector(`[data-f="${k}"]`),o=q&&q.quotes&&q.quotes['IBIT_C50_2028-06'];
+  if(!o||!(o.last>0||o.bid>0||o.ask>0)){f('p').textContent='—';f('c').className='qc';f('c').textContent='quote unavailable';f('ba').textContent=''}
+  else{
+   const mid=(o.bid>0&&o.ask>0)?(o.bid+o.ask)/2:null, lt=o.lastTradeTime?new Date(o.lastTradeTime+'Z'):null;/* CBOE time is exchange (ET) wall-clock; treat as UTC only for formatting */
+   const recent=o.last>0&&lt&&(Date.now()-lt.getTime())<4*DAY+5*36e5;
+   const fmtT=t=>t.toLocaleString('en-US',{timeZone:'UTC',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+' ET';
+   if(recent||!mid){f('p').innerHTML=`${usd(o.last,2)} <span class="sub" style="font-size:12px;font-weight:400">last${lt?' · '+fmtT(lt):''}</span>`}
+   else{f('p').innerHTML=`${usd(mid,2)} <span class="sub" style="font-size:12px;font-weight:400">bid/ask midpoint (no recent trade)</span>`}
+   if(o.change!=null&&o.changePct!=null){const up=o.change>=0;f('c').className='qc '+(up?'up':'dn');
+    f('c').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(o.change),2)} (${up?'+':'−'}${Math.abs(o.changePct).toFixed(2)}%) · last session`}
+   else{f('c').className='qc';f('c').textContent='change n/a'}
+   f('ba').textContent=`Bid ${o.bid!=null?usd(o.bid,2):'—'} / Ask ${o.ask!=null?usd(o.ask,2):'—'}`+(o.underlyingPrice?` · IBIT ${usd(o.underlyingPrice,2)}`:'')+(o.openInterest?` · OI ${o.openInterest.toLocaleString()}`:'');
+  }}
  $('qupd').textContent=q&&q.fetchedUtc?'stock quotes fetched '+new Date(q.fetchedUtc).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}):'stock quotes unavailable';
 }
 update();updateQuotes();setInterval(()=>{update();updateQuotes()},60000);

@@ -9,5 +9,6 @@ Static single-page Bitcoin dashboard, live at https://rhoffman721.github.io/btc-
 - Log-scale history chart from 2010 with a 200-day SMA and dashed projections to 2030.
 - 60s auto-refresh.
 - STRC and SATA quotes come from Nasdaq's public quote API via a GitHub Action that refreshes quotes.json every ~5 minutes on weekdays.
+- The IBIT280616C00050000 call quote comes from CBOE's 15-minute-delayed public chain via the same workflow.
 
 GitHub Pages: Deploy from branch `main`, folder `/ (root)`.
