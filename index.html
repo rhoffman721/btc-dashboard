@@ -20,7 +20,7 @@ footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color
 .chart{height:460px;position:relative}.chart canvas{width:100%!important}
 @media(max-width:600px){.chart{height:340px}}
 main{max-width:980px}
-.tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
+.tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.prefs{grid-column:span 2}.pqrow{display:grid;grid-template-columns:1fr 1fr;gap:0}.pq{min-width:0;padding-right:14px}.pq+.pq{padding:0 0 0 14px;border-left:1px solid var(--line)}@media(max-width:520px){.prefs{grid-column:auto}.pqrow{grid-template-columns:1fr}.pq{padding:0}.pq+.pq{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;margin-top:10px}}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -32,8 +32,7 @@ main{max-width:980px}
   <div class="chg" id="chg">Loading…</div>
 </div>
 <div class="grid stocks">
-  <div class="card" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
-  <div class="card" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
+  <div class="card prefs"><div class="lbl" style="margin-bottom:8px">Preferred stocks</div><div class="pqrow"><div class="pq" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div><div class="pq" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div></div></div>
   <div class="card" id="q-OPT"><div class="tk"><b>IBIT Jun 16 '28 $50 Call</b><span class="sub" style="font-size:11px">15-min delayed</span></div><div class="nm" data-f="nm">IBIT280616C00050000 · iShares Bitcoin Trust</div><div class="ul" data-f="ul">IBIT —</div><div class="nm" data-f="uls" style="white-space:normal"></div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div><div class="nm" data-f="ba"></div></div>
 </div>
 <div class="grid">
