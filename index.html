@@ -126,12 +126,16 @@ async function initChart(){
  const cycles={id:'cycles',beforeDatasetsDraw(c){const a=c.chartArea,X=c.scales.x,g=c.ctx;g.save();
   for(const [s0,e0,k] of BANDS){const x0=Math.max(a.left,X.getPixelForValue(s0)),x1=Math.min(a.right,X.getPixelForValue(e0));if(x1<=x0)continue;
    g.fillStyle=k==='bull'?'rgba(63,185,80,0.09)':'rgba(248,81,73,0.10)';g.fillRect(x0,a.top,x1-x0,a.bottom-a.top)}g.restore()}};
+ // Horizontal line at the live BTC price (LIVE.btc, refreshed every 60 s with the price card)
+ const curline={id:'curline',afterDatasetsDraw(c){const p=LIVE.btc;if(!(p>0))return;const y=c.scales.y.getPixelForValue(p),a=c.chartArea;if(y<a.top||y>a.bottom)return;
+  const g=c.ctx,col='#b1bac4',lbl='Current price: '+usd(p,0);g.save();g.strokeStyle=col;g.lineWidth=1;g.beginPath();g.moveTo(a.left,y);g.lineTo(a.right,y);g.stroke();
+  g.font='600 11px system-ui,sans-serif';const w=g.measureText(lbl).width;g.fillStyle='rgba(13,17,23,0.85)';g.fillRect(a.left+6,y-17,w+8,15);g.fillStyle=col;g.fillText(lbl,a.left+10,y-6);g.restore()}};
  const vmark={id:'vmark',afterDatasetsDraw(c){const x=c.scales.x.getPixelForValue(F100),a=c.chartArea;if(x<a.left||x>a.right)return;
   const g=c.ctx;g.save();g.strokeStyle='#a371f7';g.lineWidth=1.2;g.setLineDash([4,4]);g.beginPath();g.moveTo(x,a.top);g.lineTo(x,a.bottom);g.stroke();
   g.setLineDash([]);g.font='600 11px system-ui,sans-serif';g.fillStyle='#a371f7';const w=g.measureText(F100lbl).width;
   const tx=x+w+8>a.right?x-w-6:x+6;g.fillText(F100lbl,tx,a.top+14);g.restore()}};
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
- chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},plugins:[cycles,vmark],
+ chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},plugins:[cycles,vmark,curline],
   options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
    interaction:{mode:'nearest',axis:'x',intersect:false},
    plugins:{legend:{labels:{boxWidth:14,boxHeight:2}},
