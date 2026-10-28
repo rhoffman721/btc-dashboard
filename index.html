@@ -139,8 +139,8 @@ async function initChart(){
    plugins:{legend:{display:false},
     tooltip:{callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
      label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
-   scales:{x:{type:'time',min:start,max:end,time:{unit:'year'},title:{display:true,text:'Date'}},
-    y:{type:'logarithmic',min:1000,title:{display:true,text:'Price (USD, log scale)'},
+   scales:{x:{type:'time',min:start,max:end,time:{unit:'year'}},
+    y:{type:'logarithmic',min:1000,
      ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?compactUsd(v):''}}}}}});
 }
 function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
