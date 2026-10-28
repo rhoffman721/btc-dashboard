@@ -41,7 +41,7 @@ main{max-width:980px}
   <div class="card"><div class="lbl">Power-law fair value</div><div class="big" id="fair">—</div><div class="sub" id="fairrel"></div></div>
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
-<div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div><div class="sub" style="font-size:11px;margin-top:8px;display:flex;gap:16px;flex-wrap:wrap"><span><i style="display:inline-block;width:12px;height:10px;background:rgba(63,185,80,0.35);margin-right:5px;vertical-align:middle"></i>Bull phase (18 months → next halving)</span><span><i style="display:inline-block;width:12px;height:10px;background:rgba(248,81,73,0.35);margin-right:5px;vertical-align:middle"></i>Bear phase (18 months → 30 months)</span></div></div>
+<div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div><div class="sub" style="font-size:11px;margin-top:8px;display:flex;gap:16px;flex-wrap:wrap"><span><i style="display:inline-block;width:12px;height:10px;background:rgba(63,185,80,0.35);margin-right:5px;vertical-align:middle"></i>Bull phase (halving → next halving)</span><span><i style="display:inline-block;width:12px;height:10px;background:rgba(248,81,73,0.35);margin-right:5px;vertical-align:middle"></i>Bear phase (18 → 30 months, on top)</span></div></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
@@ -118,11 +118,11 @@ async function initChart(){
  const F100lbl='Floor hits $100k · '+new Date(F100).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'});
  // ---- Four-year cycle shading (months after each halving) ----
  const CYCLE_BEAR_START_MONTHS = 18;   // red bear band starts this many months after each halving (≈ cycle peak)
- const CYCLE_GREEN_START_MONTHS = 30;  // red bear band ends this many months after each halving (18 + 12); green runs month 18 → next halving, red drawn on top
+ const CYCLE_GREEN_START_MONTHS = 30;  // red bear band ends this many months after each halving (18 + 12); green runs halving → next halving, red drawn on top
  const CYCLE_LAST_HALVING_SPAN_MONTHS = 48;  // band end for the newest halving when no next halving date is listed (~4 yrs)
  const HALV=[Date.UTC(2012,10,28),Date.UTC(2016,6,9),Date.UTC(2020,4,11),Date.UTC(2024,3,20),Date.UTC(2028,3,15)];
  const addMonths=(t,m)=>{const d=new Date(t);return Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+m,d.getUTCDate())};
- const BANDS=[];HALV.forEach((h,i)=>{const end=HALV[i+1]??addMonths(h,CYCLE_LAST_HALVING_SPAN_MONTHS),r0=Math.min(addMonths(h,CYCLE_BEAR_START_MONTHS),end),g0=Math.min(addMonths(h,CYCLE_GREEN_START_MONTHS),end);if(end>r0)BANDS.push([r0,end,'bull']);if(g0>r0)BANDS.push([r0,g0,'bear'])});
+ const BANDS=[];HALV.forEach((h,i)=>{const end=HALV[i+1]??addMonths(h,CYCLE_LAST_HALVING_SPAN_MONTHS),r0=Math.min(addMonths(h,CYCLE_BEAR_START_MONTHS),end),g0=Math.min(addMonths(h,CYCLE_GREEN_START_MONTHS),end);if(end>h)BANDS.push([h,end,'bull']);if(g0>r0)BANDS.push([r0,g0,'bear'])});
  const cycles={id:'cycles',beforeDatasetsDraw(c){const a=c.chartArea,X=c.scales.x,g=c.ctx;g.save();
   for(const [s0,e0,k] of BANDS){const x0=Math.max(a.left,X.getPixelForValue(s0)),x1=Math.min(a.right,X.getPixelForValue(e0));if(x1<=x0)continue;
    g.fillStyle=k==='bull'?'rgba(63,185,80,0.09)':'rgba(248,81,73,0.10)';g.fillRect(x0,a.top,x1-x0,a.bottom-a.top)}g.restore()}};
