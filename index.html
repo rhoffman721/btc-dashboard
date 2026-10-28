@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC Monitor</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--txt:#e6edf3;--mut:#8b949e;--up:#3fb950;--dn:#f85149;--acc:#f7931a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;padding:32px 16px}
+main{width:100%;max-width:760px}
+h1{font-size:18px;font-weight:600;color:var(--mut);margin:0 0 20px;letter-spacing:.5px}h1 b{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.price{font-size:clamp(40px,9vw,64px);font-weight:700;letter-spacing:-1px}
+.chg{font-size:20px;font-weight:600;margin-top:6px}.up{color:var(--up)}.dn{color:var(--dn)}
+.lbl{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.big{font-size:30px;font-weight:700;margin-top:4px}.sub{color:var(--mut);font-size:14px;margin-top:4px}
+.bar{height:8px;background:#21262d;border-radius:4px;margin-top:16px;position:relative;overflow:hidden}.bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--up),var(--acc),var(--dn));border-radius:4px}
+footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color:var(--txt)}
+.chart{height:460px;position:relative}.chart canvas{width:100%!important}
+@media(max-width:600px){.chart{height:340px}}
+main{max-width:980px}
+</style>
+</head>
+<body>
+<main>
+<h1><b>₿</b> Bitcoin Monitor</h1>
+<div class="card">
+  <div class="lbl">BTC / USD</div>
+  <div class="price" id="price">—</div>
+  <div class="chg" id="chg">Loading…</div>
+</div>
+<div class="grid">
+  <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
+  <div class="card"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub">Support line (≈0.46× fair value)</div></div>
+  <div class="card"><div class="lbl">Power-law fair value</div><div class="big" id="fair">—</div><div class="sub" id="fairrel"></div></div>
+</div>
+<div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
+<div class="card"><div class="lbl" style="margin-bottom:10px">Price history vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div></div>
+<footer>
+  <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
+  <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
+  <div>Power law (Santostasi / Giovannetti), d = days since genesis block 2009‑01‑03:
+  fair value = <code>10^(−17.016) × d^5.84</code>; floor = <code>10^(−17.351) × d^5.84</code>. Model is descriptive, not a forecast or financial advice.</div>
+</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+const GEN=Date.UTC(2009,0,3), DAY=864e5;
+const usd=(v,d=0)=>v.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d});
+const $=id=>document.getElementById(id);
+async function j(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()}
+const sources=[
+ ['CoinGecko',async()=>{const d=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;return{p,pct:c,abs:p-p/(1+c/100)}}],
+ ['Coinbase',async()=>{const d=await j('https://api.exchange.coinbase.com/products/BTC-USD/stats');const p=+d.last,o=+d.open;return{p,abs:p-o,pct:(p-o)/o*100}}],
+ ['Kraken',async()=>{const d=await j('https://api.kraken.com/0/public/Ticker?pair=XBTUSD');const t=Object.values(d.result)[0];const p=+t.c[0],o=+t.o;return{p,abs:p-o,pct:(p-o)/o*100}}]
+];
+async function update(){
+ for(const [name,fn] of sources){
+  try{const {p,abs,pct}=await fn(); if(!(p>0))throw 0; render(p,abs,pct,name); return}catch(e){console.warn(name,e)}
+ }
+ $('chg').textContent='Price sources unavailable — retrying in 60 s';
+}
+function render(p,abs,pct,name){
+ const d=(Date.now()-GEN)/DAY, ld=Math.log10(d);
+ const fair=10**(-17.016+5.84*ld), floor=10**(-17.351+5.84*ld);
+ $('price').textContent=usd(p,2);
+ const up=abs>=0;$('chg').className='chg '+(up?'up':'dn');
+ $('chg').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(abs),2)} (${up?'+':'−'}${Math.abs(pct).toFixed(2)}%) · 24h`;
+ const m=p/floor;$('pct').textContent=`${m>=1?'+':''}${((m-1)*100).toFixed(1)}%`;$('pct').className='big '+(m>=1?'up':'dn');
+ $('mult').textContent=`${m.toFixed(2)}× the floor (${m>=1?'above':'below'})`;
+ $('floor').textContent=usd(floor);$('fair').textContent=usd(fair);
+ const f=p/fair;$('fairrel').textContent=`Price is ${f.toFixed(2)}× fair value (${f>=1?'+':''}${((f-1)*100).toFixed(1)}%)`;
+ const pos=Math.log(p/floor)/Math.log(5*fair/floor);$('barfill').style.width=Math.max(2,Math.min(100,pos*100))+'%';
+ pushLive(p);
+ $('upd').textContent=new Date().toLocaleTimeString();$('src').textContent=name;
+}
+
+const plv=(t,b)=>10**(b+5.84*Math.log10((t-GEN)/DAY));
+let chart,hist=[];
+async function initChart(){
+ try{hist=await j('history.json')}catch(e){console.warn('history',e)}
+ try{const d=await j('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90&interval=daily');
+  const last=hist.length?hist[hist.length-1][0]:0;
+  for(const [t,p] of d.prices) if(t>last+DAY/2) hist.push([t,p]);}catch(e){console.warn('cg chart',e)}
+ const now=Date.now(),end=Date.UTC(2030,11,31),start=Date.UTC(2010,6,1);
+ const past=[],fut=[];
+ for(let t=start;t<now;t+=7*DAY)past.push(t);past.push(now);
+ for(let t=now;t<end;t+=14*DAY)fut.push(t);fut.push(end);
+ const line=(ts,b)=>ts.map(t=>({x:t,y:plv(t,b)}));
+ const FV='#f7931a',FL='#58a6ff';
+ const ds=[
+  {label:'BTC daily close (USD)',data:hist.map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
+  {label:'Power-law fair value: 10^−17.016 × d^5.84',data:line(past,-17.016),borderColor:FV,borderWidth:1.8,pointRadius:0},
+  {label:'Power-law floor (support): 10^−17.351 × d^5.84',data:line(past,-17.351),borderColor:FL,borderWidth:1.8,pointRadius:0},
+  {label:'Fair value — projection',data:line(fut,-17.016),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
+  {label:'Floor — projection',data:line(fut,-17.351),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
+ const sma=[];let acc=0;for(let i=0;i<hist.length;i++){acc+=hist[i][1];if(i>=200)acc-=hist[i-200][1];if(i>=199)sma.push({x:hist[i][0],y:acc/200})}
+ ds.splice(1,0,{label:'200-day SMA',data:sma,borderColor:'#2aa198',borderWidth:1.4,pointRadius:0});
+ Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
+ chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},
+  options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
+   interaction:{mode:'nearest',axis:'x',intersect:false},
+   plugins:{legend:{labels:{boxWidth:14,boxHeight:2}},
+    tooltip:{callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
+     label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
+   scales:{x:{type:'time',min:start,max:end,time:{unit:'year'},title:{display:true,text:'Date'}},
+    y:{type:'logarithmic',min:0.01,title:{display:true,text:'Price (USD, log scale)'},
+     ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?usd(v,v<1?2:0):''}}}}}});
+}
+function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
+ if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});chart.update('none')}
+initChart();
+update();setInterval(update,60000);
+</script>
+</body>
+</html>
