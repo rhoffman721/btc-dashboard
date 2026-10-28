@@ -64,7 +64,7 @@ async function j(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new
 const LIVE={btc:null,ibit:null};
 function renderMap(){const b=LIVE.btc,i=LIVE.ibit;if(!(b>0&&i>0))return;const r=i/b;
  $('mapnote').textContent=`Scaled by today's live ratio: each IBIT share ≈ ${(r).toFixed(6)} BTC, so IBIT ≈ BTC ÷ ${(1/r).toFixed(0)}. Now: BTC ${usd(b,0)} ↔ IBIT ${usd(i,2)}. The $50 call strike lines up with BTC ≈ ${usd(50/r,0)}.`;
- let h='';for(let v=70000;v<=150000;v+=10000){const near=Math.abs(v-b)<5000;h+=`<tr${near?' style="background:#1b2333"':''}><td style="padding:6px 8px;border-bottom:1px solid #1f2633">${usd(v,0)}</td><td style="padding:6px 8px;border-bottom:1px solid #1f2633;text-align:right">${usd(v*r,2)}</td></tr>`}
+ let h='';for(let v=150000;v>=70000;v-=10000){const near=Math.abs(v-b)<5000;h+=`<tr${near?' style="background:#1b2333"':''}><td style="padding:6px 8px;border-bottom:1px solid #1f2633">${usd(v,0)}</td><td style="padding:6px 8px;border-bottom:1px solid #1f2633;text-align:right">${usd(v*r,2)}</td></tr>`}
  $('mapbody').innerHTML=h}
 const sources=[
  ['CoinGecko',async()=>{const d=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;return{p,pct:c,abs:p-p/(1+c/100)}}],
