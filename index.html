@@ -20,6 +20,7 @@ footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color
 .chart{height:460px;position:relative}.chart canvas{width:100%!important}
 @media(max-width:600px){.chart{height:340px}}
 main{max-width:980px}
+.tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}
 </style>
 </head>
 <body>
@@ -29,6 +30,10 @@ main{max-width:980px}
   <div class="lbl">BTC / USD</div>
   <div class="price" id="price">—</div>
   <div class="chg" id="chg">Loading…</div>
+</div>
+<div class="grid stocks">
+  <div class="card" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
+  <div class="card" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div>
 </div>
 <div class="grid">
   <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
@@ -40,6 +45,7 @@ main{max-width:980px}
 <footer>
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
   <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
+  <div>Stocks: Nasdaq quote data, fetched every ~5 min on weekdays by a GitHub Action into quotes.json (delayed by up to the fetch interval); <span id="qupd">—</span>.</div>
   <div>Power law (Santostasi / Giovannetti), d = days since genesis block 2009‑01‑03:
   fair value = <code>1.0117×10<sup>−17</sup> × d<sup>5.82</sup></code>; floor = <code>fair value × 0.42</code> (standard power law as published by BGeometrics / bitcoinfairprice.com). Model is descriptive, not a forecast or financial advice.</div>
 </footer>
@@ -112,7 +118,20 @@ async function initChart(){
 function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
  if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});chart.update('none')}
 initChart();
-update();setInterval(update,60000);
+
+async function updateQuotes(){
+ let q=null;try{q=await j('quotes.json?t='+Date.now())}catch(e){console.warn('quotes',e)}
+ for(const sym of ['STRC','SATA']){
+  const el=$('q-'+sym),f=k=>el.querySelector(`[data-f="${k}"]`),d=q&&q.quotes&&q.quotes[sym];
+  if(!d||!(d.price>0)){f('p').textContent='—';f('c').className='qc';f('c').textContent='quote unavailable';continue}
+  f('nm').textContent=d.name;f('nm').title=d.name;f('st').textContent=d.status||'';
+  f('p').textContent=usd(d.price,2);
+  const up=d.change>=0;f('c').className='qc '+(up?'up':'dn');
+  f('c').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(d.change),2)} (${up?'+':'−'}${Math.abs(d.changePct).toFixed(2)}%)`;
+ }
+ $('qupd').textContent=q&&q.fetchedUtc?'stock quotes fetched '+new Date(q.fetchedUtc).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}):'stock quotes unavailable';
+}
+update();updateQuotes();setInterval(()=>{update();updateQuotes()},60000);
 </script>
 </body>
 </html>
