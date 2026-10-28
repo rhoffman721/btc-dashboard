@@ -91,6 +91,7 @@ function render(p,abs,pct,name){
  $('upd').textContent=new Date().toLocaleTimeString();$('src').textContent=name;
 }
 
+const compactUsd=v=>{const f=(n,u)=>'$'+(+n.toFixed(2)).toString()+u;return v>=1e9?f(v/1e9,'B'):v>=1e6?f(v/1e6,'M'):v>=1e3?f(v/1e3,'K'):'$'+(+v.toFixed(2))};
 const plv=(t,k)=>k*1.0117e-17*((t-GEN)/DAY)**5.82;
 let chart,hist=[];
 async function initChart(){
@@ -140,7 +141,7 @@ async function initChart(){
      label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
    scales:{x:{type:'time',min:start,max:end,time:{unit:'year'},title:{display:true,text:'Date'}},
     y:{type:'logarithmic',min:1000,title:{display:true,text:'Price (USD, log scale)'},
-     ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?usd(v,v<1?2:0):''}}}}}});
+     ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?compactUsd(v):''}}}}}});
 }
 function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
  if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});chart.update('none')}
