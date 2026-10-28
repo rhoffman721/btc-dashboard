@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-10-28T12:01:57Z",
+ "fetchedUtc": "2026-10-28T12:50:19Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -9,7 +9,7 @@
    "price": 99.51,
    "change": 0.02,
    "changePct": 0.02,
-   "asOf": "Oct 28, 2026 8:00 AM ET",
+   "asOf": "Oct 28, 2026 8:49 AM ET",
    "realTime": true,
    "status": "Pre-Market"
   },
@@ -17,10 +17,10 @@
    "symbol": "SATA",
    "name": "Strive, Inc. Variable Rate Series A Perpetual Preferred Stock",
    "exchange": "NASDAQ-GM",
-   "price": 98.72,
-   "change": 0.2716,
-   "changePct": 0.28,
-   "asOf": "Oct 28, 2026 7:51 AM ET",
+   "price": 98.7,
+   "change": 0.2516,
+   "changePct": 0.26,
+   "asOf": "Oct 28, 2026 8:48 AM ET",
    "realTime": true,
    "status": "Pre-Market"
   },
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF",
    "exchange": "NASDAQ-GM",
-   "price": 45.9801,
-   "change": 0.2801,
-   "changePct": 0.61,
-   "asOf": "Oct 28, 2026 8:01 AM ET",
+   "price": 45.64,
+   "change": -0.06,
+   "changePct": -0.13,
+   "asOf": "Oct 28, 2026 8:49 AM ET",
    "realTime": true,
    "status": "Pre-Market",
    "source": "Nasdaq"
