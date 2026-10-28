@@ -43,6 +43,9 @@ main{max-width:980px}
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">Price history vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div></div>
+<div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
+<div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
+<table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
 <footer>
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
   <div>History: daily USD price from blockchain.com (2010‑08‑18 onward, snapshot at build) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
@@ -58,6 +61,11 @@ const GEN=Date.UTC(2009,0,3), DAY=864e5;
 const usd=(v,d=0)=>v.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d});
 const $=id=>document.getElementById(id);
 async function j(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return r.json()}
+const LIVE={btc:null,ibit:null};
+function renderMap(){const b=LIVE.btc,i=LIVE.ibit;if(!(b>0&&i>0))return;const r=i/b;
+ $('mapnote').textContent=`Scaled by today's live ratio: each IBIT share ≈ ${(r).toFixed(6)} BTC, so IBIT ≈ BTC ÷ ${(1/r).toFixed(0)}. Now: BTC ${usd(b,0)} ↔ IBIT ${usd(i,2)}. The $50 call strike lines up with BTC ≈ ${usd(50/r,0)}.`;
+ let h='';for(let v=70000;v<=150000;v+=10000){const near=Math.abs(v-b)<5000;h+=`<tr${near?' style="background:#1b2333"':''}><td style="padding:6px 8px;border-bottom:1px solid #1f2633">${usd(v,0)}</td><td style="padding:6px 8px;border-bottom:1px solid #1f2633;text-align:right">${usd(v*r,2)}</td></tr>`}
+ $('mapbody').innerHTML=h}
 const sources=[
  ['CoinGecko',async()=>{const d=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;return{p,pct:c,abs:p-p/(1+c/100)}}],
  ['Coinbase',async()=>{const d=await j('https://api.exchange.coinbase.com/products/BTC-USD/stats');const p=+d.last,o=+d.open;return{p,abs:p-o,pct:(p-o)/o*100}}],
@@ -72,7 +80,7 @@ async function update(){
 function render(p,abs,pct,name){
  const d=(Date.now()-GEN)/DAY, ld=Math.log10(d);
  const fair=1.0117e-17*10**(5.82*ld), floor=fair*0.42;
- $('price').textContent=usd(p,2);
+ $('price').textContent=usd(p,2);LIVE.btc=p;renderMap();
  const up=abs>=0;$('chg').className='chg '+(up?'up':'dn');
  $('chg').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(abs),2)} (${up?'+':'−'}${Math.abs(pct).toFixed(2)}%) · 24h`;
  const m=p/floor;$('pct').textContent=`${m>=1?'+':''}${((m-1)*100).toFixed(1)}%`;$('pct').className='big '+(m>=1?'up':'dn');
@@ -148,7 +156,7 @@ async function updateQuotes(){
  {const el=$('q-OPT'),f=k=>el.querySelector(`[data-f="${k}"]`),u=q&&q.quotes&&q.quotes.IBIT,o=q&&q.quotes&&q.quotes['IBIT_C50_2028-06'];
   const up0=u&&u.price>0?u:(o&&o.underlyingPrice>0?{price:o.underlyingPrice,status:'15-min delayed (CBOE)'}:null);
   if(!up0){f('ul').textContent='IBIT quote unavailable';f('uls').textContent=''}
-  else{const K=50,d=(up0.price-K)/K*100;
+  else{const K=50,d=(up0.price-K)/K*100;LIVE.ibit=up0.price;renderMap();
    let h=`IBIT ${usd(up0.price,2)}`;
    if(up0.change!=null&&up0.changePct!=null){const up=up0.change>=0;h+=` <small class="${up?'up':'dn'}">${up?'▲ +':'▼ −'}${usd(Math.abs(up0.change),2)} (${up?'+':'−'}${Math.abs(up0.changePct).toFixed(2)}%)</small>`}
    f('ul').innerHTML=h;
