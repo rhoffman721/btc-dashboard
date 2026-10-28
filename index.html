@@ -41,7 +41,7 @@ main{max-width:980px}
   <div class="card"><div class="lbl">Power-law fair value</div><div class="big" id="fair">—</div><div class="sub" id="fairrel"></div></div>
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
-<div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div></div>
+<div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="chart"><canvas id="chart"></canvas></div><div class="sub" style="font-size:11px;margin-top:8px;display:flex;gap:16px;flex-wrap:wrap"><span><i style="display:inline-block;width:12px;height:10px;background:rgba(63,185,80,0.35);margin-right:5px;vertical-align:middle"></i>Bull phase (~3 yr)</span><span><i style="display:inline-block;width:12px;height:10px;background:rgba(248,81,73,0.35);margin-right:5px;vertical-align:middle"></i>Bear phase (~1 yr)</span><span>Four-year cycle shading anchored to halvings (Nov 2012, Jul 2016, May 2020, Apr 2024, ~Apr 2028 est.): bear year starts ~18 months after each halving.</span></div></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
@@ -116,12 +116,17 @@ async function initChart(){
  ds.splice(1,0,{label:'200-day SMA',data:sma,borderColor:'#2aa198',borderWidth:1.4,pointRadius:0});
  const F100=GEN+DAY*Math.pow(1e5/(0.42*1.0117e-17),1/5.82);
  const F100lbl='Floor hits $100k · '+new Date(F100).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'});
+ const HALV=[Date.UTC(2012,10,28),Date.UTC(2016,6,9),Date.UTC(2020,4,11),Date.UTC(2024,3,20),Date.UTC(2028,3,15)];
+ const BANDS=[];{let prev=null;for(const h of HALV){const pk=h+548*DAY,bt=pk+365*DAY;if(prev!==null)BANDS.push([prev,pk,'bull']);BANDS.push([pk,bt,'bear']);prev=bt}}
+ const cycles={id:'cycles',beforeDatasetsDraw(c){const a=c.chartArea,X=c.scales.x,g=c.ctx;g.save();
+  for(const [s0,e0,k] of BANDS){const x0=Math.max(a.left,X.getPixelForValue(s0)),x1=Math.min(a.right,X.getPixelForValue(e0));if(x1<=x0)continue;
+   g.fillStyle=k==='bull'?'rgba(63,185,80,0.09)':'rgba(248,81,73,0.10)';g.fillRect(x0,a.top,x1-x0,a.bottom-a.top)}g.restore()}};
  const vmark={id:'vmark',afterDatasetsDraw(c){const x=c.scales.x.getPixelForValue(F100),a=c.chartArea;if(x<a.left||x>a.right)return;
   const g=c.ctx;g.save();g.strokeStyle='#a371f7';g.lineWidth=1.2;g.setLineDash([4,4]);g.beginPath();g.moveTo(x,a.top);g.lineTo(x,a.bottom);g.stroke();
   g.setLineDash([]);g.font='600 11px system-ui,sans-serif';g.fillStyle='#a371f7';const w=g.measureText(F100lbl).width;
   const tx=x+w+8>a.right?x-w-6:x+6;g.fillText(F100lbl,tx,a.top+14);g.restore()}};
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
- chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},plugins:[vmark],
+ chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},plugins:[cycles,vmark],
   options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
    interaction:{mode:'nearest',axis:'x',intersect:false},
    plugins:{legend:{labels:{boxWidth:14,boxHeight:2}},
