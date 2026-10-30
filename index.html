@@ -22,7 +22,7 @@ footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color
 @media(max-width:600px){.chart{height:340px}}
 main{max-width:980px}
 .tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.lgd{margin-top:12px;border-top:1px solid var(--line)}.lgd>summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;padding:10px 2px 2px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}.lgd>summary::-webkit-details-marker{display:none}.lgd>summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s}.lgd[open]>summary::before{transform:rotate(45deg)}.lgd>summary:hover{color:#e6edf3}.lgd .clegend{margin-top:8px}.clegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:11px;color:var(--mut)}.clegend span{display:inline-flex;align-items:center;white-space:nowrap}.clegend i{display:inline-block;width:18px;margin-right:6px}.clegend i.bx{width:12px;height:10px}.prefs{grid-column:span 2}.pqrow{display:grid;grid-template-columns:1fr 1fr;gap:0}.pq{min-width:0;padding-right:14px}.pq+.pq{padding:0 0 0 14px;border-left:1px solid var(--line)}@media(max-width:520px){.prefs{grid-column:auto}.pqrow{grid-template-columns:1fr}.pq{padding:0}.pq+.pq{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;margin-top:10px}}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
-.cagr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.cagr{width:100%;min-width:340px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}.cagr th{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--mut);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}.cagr td{text-align:right;padding:7px 10px;border-bottom:1px solid #21262d;white-space:nowrap}.cagr th:first-child,.cagr td:first-child{text-align:left}.cagr td.c{color:var(--acc);font-weight:600}.cagr tr.cur td{background:#1b2333}.cagr tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--acc)}.cagr tbody tr:last-child td{border-bottom:0}@media(max-width:600px){.cagr{font-size:13px}.cagr{min-width:0}.cagr th,.cagr td{padding:6px 5px}.cagr th{font-size:11px;letter-spacing:.3px}}
+.cagr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.cagr{width:100%;min-width:340px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}.cagr th{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--mut);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}.cagr td{text-align:right;padding:7px 10px;border-bottom:1px solid #21262d;white-space:nowrap}.cagr th:first-child,.cagr td:first-child{text-align:left}.cagr td.c{color:var(--acc);font-weight:600}.cagr td.a{font-weight:600}.cagr td.a.up{color:var(--up)}.cagr td.a.dn{color:var(--dn)}.cagr td.na{color:var(--mut);font-weight:400}.cagr tr.cur td{background:#1b2333}.cagr tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--acc)}.cagr tbody tr:last-child td{border-bottom:0}@media(max-width:600px){.cagr{font-size:13px}.cagr{min-width:0;font-size:12px}.cagr th,.cagr td{padding:6px 4px}.cagr th{font-size:10px;letter-spacing:.2px;white-space:normal;vertical-align:bottom}}
 </style>
 </head>
 <body>
@@ -47,7 +47,7 @@ main{max-width:980px}
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
-<div class="card" id="cagr-floor-card"><div class="lbl" style="margin-bottom:6px">Power-law floor CAGR by year</div><div class="sub" style="margin-bottom:12px">Annual growth if BTC tracked the power-law floor (fair value × 0.42) exactly from Jan 1 to year end. Start = Jan 1 00:00 UTC; end = Jan 1 of the next year 00:00 UTC (i.e., end of Dec 31).</div><div class="cagr-wrap"><table class="cagr" id="cagrtbl"><thead><tr><th>Year</th><th>Floor start</th><th>Floor end</th><th>CAGR %</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card" id="cagr-floor-card"><div class="lbl" style="margin-bottom:6px">Power-law floor CAGR by year</div><div class="sub" style="margin-bottom:12px">Annual growth if BTC tracked the power-law floor (fair value × 0.42) exactly from Jan 1 to year end. Start = Jan 1 00:00 UTC; end = Jan 1 of the next year 00:00 UTC (i.e., end of Dec 31). <span data-cagr-actual="v2">BTC actual = calendar-year return, Dec 31 close → Dec 31 close, completed years only (source: <span id="cagrsrc">—</span>).</span></div><div class="cagr-wrap"><table class="cagr" id="cagrtbl"><thead><tr><th>Year</th><th>Floor start</th><th>Floor end</th><th>Floor CAGR</th><th>BTC actual</th></tr></thead><tbody></tbody></table></div></div>
 <footer>
   <div>Last updated: <span id="upd">—</span> · source: <span id="src">—</span> · refreshes every 60 s</div>
   <div>History: daily USD price from blockchain.com (chart shows 2020‑01‑01 onward; 200‑day SMA computed from full history) + CoinGecko for recent days. Dashed lines = projection beyond today to 2030‑12‑31.</div>
@@ -99,6 +99,7 @@ const plv=(t,k)=>k*1.0117e-17*((t-GEN)/DAY)**5.82;
 let chart,hist=[];
 async function initChart(){
  try{hist=await j('history.json')}catch(e){console.warn('history',e)}
+ renderCagr();
  try{const d=await j('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90&interval=daily');
   const last=hist.length?hist[hist.length-1][0]:0;
   for(const [t,p] of d.prices) if(t>last+DAY/2) hist.push([t,p]);}catch(e){console.warn('cg chart',e)}
@@ -197,10 +198,21 @@ async function updateQuotes(){
 }
 update();updateQuotes();setInterval(()=>{update();updateQuotes()},60000);
 /* Power-law floor CAGR table (uses plv/GEN/DAY above; floor = plv(t,0.42)) */
-(function renderCagr(){const tb=document.querySelector('#cagrtbl tbody');if(!tb)return;const cy=new Date().getUTCFullYear();let h='';
- for(let y=2020;y<=2030;y++){const t0=Date.UTC(y,0,1),t1=Date.UTC(y+1,0,1),f0=plv(t0,0.42),f1=plv(t1,0.42),yrs=(t1-t0)/(365.25*DAY),g=(Math.pow(f1/f0,1/yrs)-1)*100;
-  h+=`<tr${y===cy?' class="cur" title="Current year"':''}><td>${y}</td><td>${usd(f0,0)}</td><td>${usd(f1,0)}</td><td class="c">${g.toFixed(1)}%</td></tr>`}
- tb.innerHTML=h})();
+/* Fallback Dec 31 closes (USD, UTC daily candle close), Coinbase Exchange BTC-USD daily candles,
+   api.exchange.coinbase.com/products/BTC-USD/candles?granularity=86400 (fetched 2026-10-30). Used only if history.json lacks a year. */
+const YE_CLOSE_FALLBACK={2019:7165.72,2020:28990.08,2021:46211.24,2022:16530.35,2023:42288.06,2024:93354.22,2025:87497.94};
+function yeClose(y){/* Dec 31 close of year y = history.json value stamped Jan 1 (y+1) 00:00 UTC (blockchain.com daily) */
+ const t=Date.UTC(y+1,0,1);let best=null;
+ if(Array.isArray(hist))for(const r of hist){if(!r||!(r[1]>0))continue;const dt=Math.abs(r[0]-t);if(dt<=12*36e5&&(!best||dt<best.dt))best={dt,p:r[1]}}
+ return best?{p:best.p,src:'h'}:(YE_CLOSE_FALLBACK[y]>0?{p:YE_CLOSE_FALLBACK[y],src:'f'}:null)}
+function renderCagr(){try{const tb=document.querySelector('#cagrtbl tbody');if(!tb)return;const cy=new Date().getUTCFullYear();let h='',srcs=new Set();
+ for(let y=2030;y>=2020;y--){const t0=Date.UTC(y,0,1),t1=Date.UTC(y+1,0,1),f0=plv(t0,0.42),f1=plv(t1,0.42),yrs=(t1-t0)/(365.25*DAY),g=(Math.pow(f1/f0,1/yrs)-1)*100;
+  let act='<td class="a na">—</td>';
+  if(y<cy){const c0=yeClose(y-1),c1=yeClose(y);if(c0&&c1){const r=(c1.p/c0.p-1)*100;srcs.add(c0.src);srcs.add(c1.src);act=`<td class="a ${r>=0?'up':'dn'}">${r>=0?'+':'−'}${Math.abs(r).toFixed(1)}%</td>`}}
+  h+=`<tr${y===cy?' class="cur" title="Current year"':''}><td>${y}</td><td>${usd(f0,0)}</td><td>${usd(f1,0)}</td><td class="c">${g.toFixed(1)}%</td>${act}</tr>`}
+ tb.innerHTML=h;const n=$('cagrsrc');if(n)n.textContent=srcs.has('h')?(srcs.has('f')?'blockchain.com daily history + Coinbase fallback':'blockchain.com daily history (history.json)'):'Coinbase BTC-USD daily closes (fallback)';
+}catch(e){console.warn('cagr',e)}}
+renderCagr();
 </script>
 </body>
 </html>
