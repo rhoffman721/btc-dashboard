@@ -23,6 +23,7 @@ footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color
 main{max-width:980px}
 .tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.lgd{margin-top:12px;border-top:1px solid var(--line)}.lgd>summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;padding:10px 2px 2px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}.lgd>summary::-webkit-details-marker{display:none}.lgd>summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s}.lgd[open]>summary::before{transform:rotate(45deg)}.lgd>summary:hover{color:#e6edf3}.lgd .clegend{margin-top:8px}.clegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:11px;color:var(--mut)}.clegend span{display:inline-flex;align-items:center;white-space:nowrap}.clegend i{display:inline-block;width:18px;margin-right:6px}.clegend i.bx{width:12px;height:10px}.prefs{grid-column:span 2}.pqrow{display:grid;grid-template-columns:1fr 1fr;gap:0}.pq{min-width:0;padding-right:14px}.pq+.pq{padding:0 0 0 14px;border-left:1px solid var(--line)}@media(max-width:520px){.prefs{grid-column:auto}.pqrow{grid-template-columns:1fr}.pq{padding:0}.pq+.pq{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;margin-top:10px}}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
 .cagr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.cagr{width:100%;min-width:340px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}.cagr th{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--mut);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}.cagr td{text-align:right;padding:7px 10px;border-bottom:1px solid #21262d;white-space:nowrap}.cagr th:first-child,.cagr td:first-child{text-align:left}.cagr td.c{color:var(--acc);font-weight:600}.cagr td.a{font-weight:600}.cagr td.a.up{color:var(--up)}.cagr td.a.dn{color:var(--dn)}.cagr td.na{color:var(--mut);font-weight:400}.cagr tr.cur td{background:#1b2333}.cagr tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--acc)}.cagr tbody tr:last-child td{border-bottom:0}@media(max-width:600px){.cagr{font-size:13px}.cagr{min-width:0;font-size:12px}.cagr th,.cagr td{padding:6px 4px}.cagr th{font-size:10px;letter-spacing:.2px;white-space:normal;vertical-align:bottom}}
+.pupd{color:var(--mut);font-size:11px;margin-top:4px;line-height:1.3;min-height:14px;font-variant-numeric:tabular-nums;opacity:.85}.pupd.stale{opacity:.5}
 </style>
 </head>
 <body>
@@ -32,6 +33,7 @@ main{max-width:980px}
   <div class="lbl">BTC / USD</div>
   <div class="price" id="price">—</div>
   <div class="chg" id="chg">Loading…</div>
+  <div class="pupd" id="pupd" data-ts-marker="price-updated-v1"></div>
 </div>
 <div class="grid stocks">
   <div class="card prefs"><div class="lbl" style="margin-bottom:8px">Preferred stocks</div><div class="pqrow"><div class="pq" id="q-STRC"><div class="tk"><b>STRC</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strategy Inc · Stretch preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div><div class="pq" id="q-SATA"><div class="tk"><b>SATA</b><span class="sub" style="font-size:11px" data-f="st"></span></div><div class="nm" data-f="nm">Strive, Inc. · Series A preferred</div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div></div></div></div>
@@ -69,15 +71,23 @@ function renderMap(){const b=LIVE.btc,i=LIVE.ibit;if(!(b>0&&i>0))return;const r=
  let h='';for(let v=150000;v>=70000;v-=10000){const near=Math.abs(v-b)<5000;h+=`<tr${near?' style="background:#1b2333"':''}><td style="padding:6px 8px;border-bottom:1px solid #1f2633">${usd(v,0)}</td><td style="padding:6px 8px;border-bottom:1px solid #1f2633;text-align:right">${usd(v*r,2)}</td></tr>`}
  $('mapbody').innerHTML=h}
 const sources=[
- ['CoinGecko',async()=>{const d=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;return{p,pct:c,abs:p-p/(1+c/100)}}],
+ ['CoinGecko',async()=>{const d=await j('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true');const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change,lu=d.bitcoin.last_updated_at;return{p,pct:c,abs:p-p/(1+c/100),ts:lu>0?lu*1000:null}}],
  ['Coinbase',async()=>{const d=await j('https://api.exchange.coinbase.com/products/BTC-USD/stats');const p=+d.last,o=+d.open;return{p,abs:p-o,pct:(p-o)/o*100}}],
  ['Kraken',async()=>{const d=await j('https://api.kraken.com/0/public/Ticker?pair=XBTUSD');const t=Object.values(d.result)[0];const p=+t.c[0],o=+t.o;return{p,abs:p-o,pct:(p-o)/o*100}}]
 ];
+const PUPD={t:null,src:null,stale:false};
+function renderPupd(){try{const el=$('pupd');if(!el)return;if(!PUPD.t){el.textContent='';return}
+ const tm=new Date(PUPD.t).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}),s=Math.max(0,(Date.now()-PUPD.t)/1000),m=Math.floor(s/60),h=Math.floor(m/60);
+ const rel=s<60?'just now':m<60?`${m} min ago`:`${h} hr${h>1?'s':''} ago`;
+ el.textContent=`Updated ${tm} · ${rel}`+(PUPD.stale?' · refresh failed':'');el.classList.toggle('stale',PUPD.stale);
+ el.title=PUPD.src==='source'?'Time reported by the price source (CoinGecko last_updated_at)':'Time this page fetched the price';
+}catch(e){console.warn('pupd',e)}}
+setInterval(renderPupd,30000);
 async function update(){
  for(const [name,fn] of sources){
-  try{const {p,abs,pct}=await fn(); if(!(p>0))throw 0; render(p,abs,pct,name); return}catch(e){console.warn(name,e)}
+  try{const {p,abs,pct,ts}=await fn(); if(!(p>0))throw 0; render(p,abs,pct,name); PUPD.t=(ts>0&&ts<=Date.now()+6e4)?ts:Date.now(); PUPD.src=ts>0?'source':'fetch'; PUPD.stale=false; renderPupd(); return}catch(e){console.warn(name,e)}
  }
- $('chg').textContent='Price sources unavailable — retrying in 60 s';
+ $('chg').textContent='Price sources unavailable — retrying in 60 s'; PUPD.stale=true; renderPupd();
 }
 function render(p,abs,pct,name){
  const d=(Date.now()-GEN)/DAY, ld=Math.log10(d);
