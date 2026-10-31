@@ -24,7 +24,7 @@ main{max-width:980px}
 .tk{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.tk b{font-size:15px;letter-spacing:.5px}.nm{color:var(--mut);font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qp{font-size:24px;font-weight:700;margin-top:6px}.qc{font-size:14px;font-weight:600;margin-top:2px}.stocks .card{padding:14px 18px}.lgd{margin-top:12px;border-top:1px solid var(--line)}.lgd>summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;padding:10px 2px 2px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}.lgd>summary::-webkit-details-marker{display:none}.lgd>summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s}.lgd[open]>summary::before{transform:rotate(45deg)}.lgd>summary:hover{color:#e6edf3}.lgd .clegend{margin-top:8px}.clegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:11px;color:var(--mut)}.clegend span{display:inline-flex;align-items:center;white-space:nowrap}.clegend i{display:inline-block;width:18px;margin-right:6px}.clegend i.bx{width:12px;height:10px}.prefs{grid-column:span 2}.pqrow{display:grid;grid-template-columns:1fr 1fr;gap:0}.pq{min-width:0;padding-right:14px}.pq+.pq{padding:0 0 0 14px;border-left:1px solid var(--line)}@media(max-width:520px){.prefs{grid-column:auto}.pqrow{grid-template-columns:1fr}.pq{padding:0}.pq+.pq{border-left:0;border-top:1px solid var(--line);padding:10px 0 0;margin-top:10px}}.ul{font-size:16px;font-weight:600;margin-top:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}.ul small{font-size:13px;margin-left:6px}
 .cagr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.cagr{width:100%;min-width:340px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}.cagr th{text-align:right;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--mut);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}.cagr td{text-align:right;padding:7px 10px;border-bottom:1px solid #21262d;white-space:nowrap}.cagr th:first-child,.cagr td:first-child{text-align:left}.cagr td.c{color:var(--acc);font-weight:600}.cagr td.a{font-weight:600}.cagr td.a.up{color:var(--up)}.cagr td.a.dn{color:var(--dn)}.cagr td.na{color:var(--mut);font-weight:400}.cagr tr.cur td{background:#1b2333}.cagr tr.cur td:first-child{box-shadow:inset 3px 0 0 var(--acc)}.cagr tbody tr:last-child td{border-bottom:0}@media(max-width:600px){.cagr{font-size:13px}.cagr{min-width:0;font-size:12px}.cagr th,.cagr td{padding:6px 4px}.cagr th{font-size:10px;letter-spacing:.2px;white-space:normal;vertical-align:bottom}}
 .pupd{color:var(--mut);font-size:11px;margin-top:4px;line-height:1.3;min-height:14px;font-variant-numeric:tabular-nums;opacity:.85}.pupd.stale{opacity:.5}
-#smarel.up{color:var(--up)}#smarel.dn{color:var(--dn)}
+#smarel.up,#floorrel.up{color:var(--up)}#smarel.dn,#floorrel.dn{color:var(--dn)}
 </style>
 </head>
 <body>
@@ -41,8 +41,7 @@ main{max-width:980px}
   <div class="card" id="q-OPT"><div class="tk"><b>IBIT Jun 16 '28 $50 Call</b><span class="sub" style="font-size:11px">15-min delayed</span></div><div class="nm" data-f="nm">IBIT280616C00050000 · iShares Bitcoin Trust</div><div class="ul" data-f="ul">IBIT —</div><div class="nm" data-f="uls" style="white-space:normal"></div><div class="qp" data-f="p">—</div><div class="qc" data-f="c">Loading…</div><div class="nm" data-f="ba"></div></div>
 </div>
 <div class="grid">
-  <div class="card"><div class="lbl">Distance from power-law floor</div><div class="big" id="pct">—</div><div class="sub" id="mult"></div></div>
-  <div class="card"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub">Fair value × 0.42</div></div>
+  <div class="card" data-floor-card="v1"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub" id="floorrel"></div></div>
   <div class="card" data-sma-card="v1"><div class="lbl">200-day SMA</div><div class="big" id="sma200">—</div><div class="sub" id="smarel"></div></div>
 </div>
 <div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
@@ -96,9 +95,9 @@ function render(p,abs,pct,name){
  $('price').textContent=usd(p,2);LIVE.btc=p;renderMap();
  const up=abs>=0;$('chg').className='chg '+(up?'up':'dn');
  $('chg').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(abs),2)} (${up?'+':'−'}${Math.abs(pct).toFixed(2)}%) · 24h`;
- const m=p/floor;$('pct').textContent=`${m>=1?'+':''}${((m-1)*100).toFixed(1)}%`;$('pct').className='big '+(m>=1?'up':'dn');
- $('mult').textContent=`${m.toFixed(2)}× the floor (${m>=1?'above':'below'})`;
- $('floor').textContent=usd(floor);renderSma();
+ {const fv=$('floor'),fr=$('floorrel');if(fv){fv.textContent=usd(floor);fv.title='Power-law floor = fair value × 0.42'}
+ if(fr){const d=(p/floor-1)*100,up=d>=0;fr.className='sub '+(up?'up':'dn');fr.textContent=`Price ${up?'+':'−'}${Math.abs(d).toFixed(1)}% ${up?'above':'below'} floor`}}
+ renderSma();
  const pos=Math.log(p/floor)/Math.log(5*fair/floor);$('barfill').style.width=Math.max(2,Math.min(100,pos*100))+'%';
  pushLive(p);
  $('upd').textContent=new Date().toLocaleTimeString();$('src').textContent=name;
