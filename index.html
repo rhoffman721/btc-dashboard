@@ -16,7 +16,7 @@ h1{font-size:18px;font-weight:600;color:var(--mut);margin:0 0 20px;letter-spacin
 .lbl{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.6px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .big{font-size:30px;font-weight:700;margin-top:4px}.sub{color:var(--mut);font-size:14px;margin-top:4px}
-.bar{height:8px;background:#21262d;border-radius:4px;margin-top:16px;position:relative;overflow:hidden}.bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--up),var(--acc),var(--dn));border-radius:4px}
+
 footer{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.6}code{color:var(--txt)}
 .hoverbar{min-height:44px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;padding:6px 10px;margin-bottom:8px;background:#0d1117;border:1px solid var(--line);border-radius:8px;font-size:12px;line-height:1.35;color:#e6edf3;font-variant-numeric:tabular-nums}.hoverbar .hb-date{font-weight:700;margin-right:4px}.hoverbar .hb-hint{color:var(--mut)}.hoverbar .hb-i{display:inline-flex;align-items:center;white-space:nowrap}.hoverbar .hb-i i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}.hoverbar .hb-i span{color:var(--mut);margin-right:4px}@media(max-width:600px){.hoverbar{min-height:64px;font-size:11px;gap:3px 10px}}.chart{height:460px;position:relative}.chart canvas{width:100%!important}
 @media(max-width:600px){.chart{height:340px}}
@@ -44,8 +44,8 @@ main{max-width:980px}
   <div class="card" data-floor-card="v1"><div class="lbl">Power-law floor</div><div class="big" id="floor">—</div><div class="sub" id="floorrel"></div></div>
   <div class="card" data-sma-card="v1"><div class="lbl">200-day SMA</div><div class="big" id="sma200">—</div><div class="sub" id="smarel"></div></div>
 </div>
-<div class="card" style="padding:16px 24px"><div class="lbl">Position: floor → 5× fair value (log scale)</div><div class="bar"><i id="barfill" style="width:0"></i></div></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="hoverbar" id="hoverbar"><span class="hb-hint">Hover or tap the chart for values</span></div><div class="chart"><canvas id="chart"></canvas></div><details class="lgd"><summary>Legend</summary><div class="clegend"><span><i style="border-top:2px solid #e6edf3"></i>BTC daily close (USD)</span><span><i style="border-top:2px solid #2aa198"></i>200-day SMA</span><span><i style="border-top:2px solid #f7931a"></i>Power-law fair value: 1.0117e-17 × d^5.82</span><span><i style="border-top:2px solid #58a6ff"></i>Power-law floor: fair value × 0.42</span><span><i style="border-top:2px solid #f85149"></i>Upper bound (2.4x fair value)</span><span><i style="border-top:2px dashed #f7931a99"></i>Fair value — projection</span><span><i style="border-top:2px dashed #58a6ff99"></i>Floor — projection</span><span><i style="border-top:2px dashed #f8514999"></i>Upper bound — projection</span><span><i style="border-top:1px solid #b1bac4"></i>Current BTC price (live)</span><span><i style="border-top:2px dashed #a371f7"></i>Floor hits $100k (Feb 14, 2028)</span><span><i style="width:8px;height:8px;background:#ffd700;transform:rotate(45deg);margin:0 10px 0 4px"></i>Bitcoin halving (Apr 2028 estimated)</span><span><i class="bx" style="background:rgba(63,185,80,0.35)"></i>Bull phase (halving → 18 months, and 30 months → next halving)</span><span><i class="bx" style="background:rgba(248,81,73,0.35)"></i>Bear phase (18 → 30 months)</span></div></details></div>
+<div class="card" data-chart2="v1"><div class="lbl" style="margin-bottom:10px">Oct 2026 – Nov 2029 vs. power law (log scale) · hover for values</div><div class="hoverbar" id="hoverbar2"><span class="hb-hint">Hover or tap the chart for values</span></div><div class="chart"><canvas id="chart2"></canvas></div><details class="lgd"><summary>Legend</summary><div class="clegend"><span><i style="border-top:2px solid #e6edf3"></i>BTC daily close (USD)</span><span><i style="border-top:2px solid #ff79c6"></i><span id="pathlgd">Floor → fair value path (straight on log scale)</span></span><span><i style="border-top:2px solid #2aa198"></i>200-day SMA</span><span><i style="border-top:2px solid #f7931a"></i>Power-law fair value: 1.0117e-17 × d^5.82</span><span><i style="border-top:2px solid #58a6ff"></i>Power-law floor: fair value × 0.42</span><span><i style="border-top:2px solid #f85149"></i>Upper bound (2.4x fair value)</span><span><i style="border-top:2px dashed #f7931a99"></i>Fair value — projection</span><span><i style="border-top:2px dashed #58a6ff99"></i>Floor — projection</span><span><i style="border-top:2px dashed #f8514999"></i>Upper bound — projection</span><span><i style="border-top:1px solid #b1bac4"></i>Current BTC price (live)</span><span><i style="border-top:2px dashed #a371f7"></i>Floor hits $100k (Feb 14, 2028)</span><span><i style="width:8px;height:8px;background:#ffd700;transform:rotate(45deg);margin:0 10px 0 4px"></i>Bitcoin halving (Apr 2028 estimated)</span><span><i class="bx" style="background:rgba(63,185,80,0.35)"></i>Bull phase (halving → 18 months, and 30 months → next halving)</span><span><i class="bx" style="background:rgba(248,81,73,0.35)"></i>Bear phase (18 → 30 months)</span></div></details></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
@@ -98,14 +98,13 @@ function render(p,abs,pct,name){
  {const fv=$('floor'),fr=$('floorrel');if(fv){fv.textContent=usd(floor);fv.title='Power-law floor = fair value × 0.42'}
  if(fr){const d=(p/floor-1)*100,up=d>=0;fr.className='sub '+(up?'up':'dn');fr.textContent=`Price ${up?'+':'−'}${Math.abs(d).toFixed(1)}% ${up?'above':'below'} floor`}}
  renderSma();
- const pos=Math.log(p/floor)/Math.log(5*fair/floor);$('barfill').style.width=Math.max(2,Math.min(100,pos*100))+'%';
  pushLive(p);
  $('upd').textContent=new Date().toLocaleTimeString();$('src').textContent=name;
 }
 
 const compactUsd=v=>{const f=(n,u)=>'$'+(+n.toFixed(2)).toString()+u;return v>=1e9?f(v/1e9,'B'):v>=1e6?f(v/1e6,'M'):v>=1e3?f(v/1e3,'K'):'$'+(+v.toFixed(2))};
 const plv=(t,k)=>k*1.0117e-17*((t-GEN)/DAY)**5.82;
-let chart,hist=[];
+let chart,chart2,PATH=null,hist=[];
 async function initChart(){
  try{hist=await j('history.json')}catch(e){console.warn('history',e)}
  renderCagr();
@@ -148,13 +147,13 @@ async function initChart(){
  const halvmark={id:'halvmark',afterDatasetsDraw(c){const a=c.chartArea,y=a.bottom,g=c.ctx;g.save();g.fillStyle=HALV_MARK;g.strokeStyle='#0d1117';g.lineWidth=1;HALV.forEach(h=>{const x=c.scales.x.getPixelForValue(h);if(x<a.left||x>a.right)return;g.beginPath();g.moveTo(x,y-HALV_SIZE);g.lineTo(x+HALV_SIZE,y);g.lineTo(x,y+HALV_SIZE);g.lineTo(x-HALV_SIZE,y);g.closePath();g.fill();g.stroke()});g.restore()}};
  const vmark={id:'vmark',afterDatasetsDraw(c){const x=c.scales.x.getPixelForValue(F100),a=c.chartArea;if(x<a.left||x>a.right)return;
   const g=c.ctx;g.save();g.strokeStyle='#a371f7';g.lineWidth=1.2;g.setLineDash([4,4]);g.beginPath();g.moveTo(x,a.top);g.lineTo(x,a.bottom);g.stroke();g.restore()}};
- const HB=document.getElementById('hoverbar'),HB_IDLE=HB.innerHTML;
- function hoverOut({tooltip:t}){if(!t||t.opacity===0||!t.dataPoints||!t.dataPoints.length){HB.innerHTML=HB_IDLE;return}
+ const mkHover=HB=>{if(!HB)return()=>{};const HB_IDLE=HB.innerHTML;return function({tooltip:t}){if(!t||t.opacity===0||!t.dataPoints||!t.dataPoints.length){HB.innerHTML=HB_IDLE;return}
   const esc=x=>String(x).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
   let h='<b class="hb-date">'+esc((t.title||[]).join(' '))+'</b>';
   t.body.forEach((b,i)=>{const line=b.lines.join(' '),k=line.lastIndexOf(': '),c=(t.labelColors[i]||{}).borderColor||'#8b949e';
    h+='<span class="hb-i"><i style="background:'+c+'"></i>'+(k>0?'<span>'+esc(line.slice(0,k))+'</span>'+esc(line.slice(k+2)):esc(line))+'</span>'});
-  HB.innerHTML=h}
+  HB.innerHTML=h}};
+ const hoverOut=mkHover(document.getElementById('hoverbar'));
  Chart.defaults.color='#8b949e';Chart.defaults.borderColor='#21262d';
  chart=new Chart(document.getElementById('chart'),{type:'line',data:{datasets:ds},plugins:[cycles,vmark,curline,halvmark],
   options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
@@ -165,6 +164,40 @@ async function initChart(){
    scales:{x:{type:'time',min:start,max:end,time:{unit:'year'}},
     y:{type:'logarithmic',min:1000,
      ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?compactUsd(v):''}}}}}});
+ // ---- Chart 2: Oct 1, 2026 → Nov 1, 2029, same series/plugins + floor → fair value path ----
+ try{const cv2=document.getElementById('chart2');if(cv2){
+  const s2=Date.UTC(2026,9,1),e2=Date.UTC(2029,10,1),Y2MIN=40000,Y2MAX=1e6;
+  // Green span: merge contiguous bull bands from BANDS; take the one that starts in Oct 2026
+  const GREEN=[];for(const [a0,b0,k] of BANDS){if(k!=='bull')continue;const L=GREEN[GREEN.length-1];if(L&&Math.abs(L[1]-a0)<DAY)L[1]=b0;else GREEN.push([a0,b0])}
+  const g=GREEN.find(([a0])=>{const d=new Date(a0);return d.getUTCFullYear()===2026&&d.getUTCMonth()===9});
+  const days=[];for(let t=s2;t<=e2;t+=DAY)days.push(t);
+  const pastD=days.filter(t=>t<now).concat(now<=e2&&now>=s2?[now]:[]),futD=(now>=s2&&now<=e2?[now]:[]).concat(days.filter(t=>t>now));
+  const ds2=[
+   {label:'BTC daily close (USD)',data:hist.filter(([x])=>x>=s2-DAY&&x<=e2).map(([x,y])=>({x,y})),borderColor:'#e6edf3',borderWidth:1.2,pointRadius:0},
+   {label:'200-day SMA',data:sma.filter(p=>p.x>=s2-DAY),borderColor:'#2aa198',borderWidth:1.4,pointRadius:0},
+   {label:'Power-law fair value: 1.0117e-17 × d^5.82',data:line(pastD,1),borderColor:FV,borderWidth:1.8,pointRadius:0},
+   {label:'Power-law floor: fair value × 0.42',data:line(pastD,0.42),borderColor:FL,borderWidth:1.8,pointRadius:0},
+   {label:'Upper bound (2.4x fair value)',data:line(pastD,2.4),borderColor:UB,borderWidth:1.8,pointRadius:0},
+   {label:'Fair value — projection',data:line(futD,1),borderColor:FV+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
+   {label:'Floor — projection',data:line(futD,0.42),borderColor:FL+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0},
+   {label:'Upper bound — projection',data:line(futD,2.4),borderColor:UB+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
+  if(g){const [pa,pb]=g,ya=plv(pa,0.42),yb=plv(pb,1),la=Math.log(ya),lb=Math.log(yb);
+   const pts=days.filter(t=>t>pa&&t<pb).map(t=>({x:t,y:Math.exp(la+(lb-la)*(t-pa)/(pb-pa))}));pts.unshift({x:pa,y:ya});pts.push({x:pb,y:yb});
+   PATH={start:pa,end:pb,y0:ya,y1:yb};
+   ds2.splice(1,0,{label:'Floor → fair value path',data:pts,borderColor:'#ff79c6',borderWidth:2,pointRadius:0});
+   const fd=t=>new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}),pl=document.getElementById('pathlgd');
+   if(pl)pl.textContent=`Floor → fair value path: ${usd(ya)} (${fd(pa)}) → ${usd(yb)} (${fd(pb)}), straight on log scale`}
+  const nice=[1,2,5];
+  chart2=new Chart(cv2,{type:'line',data:{datasets:ds2},plugins:[cycles,vmark,curline,halvmark],
+   options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
+    interaction:{mode:'nearest',axis:'x',intersect:false},
+    plugins:{legend:{display:false},
+     tooltip:{enabled:false,external:mkHover(document.getElementById('hoverbar2')),callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
+      label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
+    scales:{x:{type:'time',min:s2,max:e2,time:{unit:'month',displayFormats:{month:'MMM yyyy'}},ticks:{maxRotation:0,autoSkip:true,autoSkipPadding:14}},
+     y:{type:'logarithmic',min:Y2MIN,max:Y2MAX,
+      ticks:{callback:v=>{const e=Math.floor(Math.log10(v)+1e-9),m=v/10**e;return nice.some(n=>Math.abs(m-n)<1e-6)?compactUsd(v):''}}}}}});
+ }}catch(e){console.warn('chart2',e)}
 }
 /* 200-day SMA card: shows the last point of the chart's 200-day SMA line (LIVE.sma), compared with the live price */
 function renderSma(){try{const v=$('sma200'),rel=$('smarel');if(!v||!rel)return;const s=LIVE.sma,p=LIVE.btc;
@@ -173,8 +206,8 @@ function renderSma(){try{const v=$('sma200'),rel=$('smarel');if(!v||!rel)return;
  if(!(p>0)){rel.className='sub';rel.textContent='Waiting for live price…';return}
  const d=(p/s.y-1)*100,up=d>=0;rel.className='sub '+(up?'up':'dn');rel.textContent=`Price ${up?'+':'−'}${Math.abs(d).toFixed(1)}% ${up?'above':'below'} SMA`;
 }catch(e){console.warn('sma',e)}}
-function pushLive(p){if(!chart)return;const d=chart.data.datasets[0].data,t=Date.now();
- if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});chart.update('none')}
+function pushLive(p){const t=Date.now();for(const c of [chart,chart2]){if(!c)continue;try{const d=c.data.datasets[0].data;
+ if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});c.update('none')}catch(e){console.warn('pushLive',e)}}}
 initChart();
 
 async function updateQuotes(){
