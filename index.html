@@ -46,6 +46,7 @@ main{max-width:980px}
 </div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">Price history since 2020 vs. power law (log scale) · hover for values</div><div class="hoverbar" id="hoverbar"><span class="hb-hint">Hover or tap the chart for values</span></div><div class="chart"><canvas id="chart"></canvas></div><details class="lgd"><summary>Legend</summary><div class="clegend"><span><i style="border-top:2px solid #e6edf3"></i>BTC daily close (USD)</span><span><i style="border-top:2px solid #2aa198"></i>200-day SMA</span><span><i style="border-top:2px solid #f7931a"></i>Power-law fair value: 1.0117e-17 × d^5.82</span><span><i style="border-top:2px solid #58a6ff"></i>Power-law floor: fair value × 0.42</span><span><i style="border-top:2px solid #f85149"></i>Upper bound (2.4x fair value)</span><span><i style="border-top:2px dashed #f7931a99"></i>Fair value — projection</span><span><i style="border-top:2px dashed #58a6ff99"></i>Floor — projection</span><span><i style="border-top:2px dashed #f8514999"></i>Upper bound — projection</span><span><i style="border-top:1px solid #b1bac4"></i>Current BTC price (live)</span><span><i style="border-top:2px dashed #a371f7"></i>Floor hits $100k (Feb 14, 2028)</span><span><i style="width:8px;height:8px;background:#ffd700;transform:rotate(45deg);margin:0 10px 0 4px"></i>Bitcoin halving (Apr 2028 estimated)</span><span><i class="bx" style="background:rgba(63,185,80,0.35)"></i>Bull phase (halving → 18 months, and 30 months → next halving)</span><span><i class="bx" style="background:rgba(248,81,73,0.35)"></i>Bear phase (18 → 30 months)</span></div></details></div>
 <div class="card" data-chart2="v1"><div class="lbl" style="margin-bottom:10px">Oct 2026 – Nov 2029 vs. power law (log scale) · hover for values</div><div class="hoverbar" id="hoverbar2"><span class="hb-hint">Hover or tap the chart for values</span></div><div class="chart"><canvas id="chart2"></canvas></div><details class="lgd"><summary>Legend</summary><div class="clegend"><span><i style="border-top:2px solid #e6edf3"></i>BTC daily close (USD)</span><span><i style="border-top:2px solid #ff79c6"></i><span id="pathlgd">Floor → fair value path (straight on log scale)</span></span><span><i style="border-top:2px solid #2aa198"></i>200-day SMA</span><span><i style="border-top:2px solid #f7931a"></i>Power-law fair value: 1.0117e-17 × d^5.82</span><span><i style="border-top:2px solid #58a6ff"></i>Power-law floor: fair value × 0.42</span><span><i style="border-top:2px solid #f85149"></i>Upper bound (2.4x fair value)</span><span><i style="border-top:2px dashed #f7931a99"></i>Fair value — projection</span><span><i style="border-top:2px dashed #58a6ff99"></i>Floor — projection</span><span><i style="border-top:2px dashed #f8514999"></i>Upper bound — projection</span><span><i style="border-top:1px solid #b1bac4"></i>Current BTC price (live)</span><span><i style="border-top:2px dashed #a371f7"></i>Floor hits $100k (Feb 14, 2028)</span><span><i style="width:8px;height:8px;background:#ffd700;transform:rotate(45deg);margin:0 10px 0 4px"></i>Bitcoin halving (Apr 2028 estimated)</span><span><i class="bx" style="background:rgba(63,185,80,0.35)"></i>Bull phase (halving → 18 months, and 30 months → next halving)</span><span><i class="bx" style="background:rgba(248,81,73,0.35)"></i>Bear phase (18 → 30 months)</span></div></details></div>
+<div class="card" data-chart3="v1"><div class="lbl" style="margin-bottom:10px">Oct 2022 – Nov 2025 vs. power law (log scale) · hover for values</div><div class="hoverbar" id="hoverbar3"><span class="hb-hint">Hover or tap the chart for values</span></div><div class="chart"><canvas id="chart3"></canvas></div><details class="lgd"><summary>Legend</summary><div class="clegend"><span><i style="border-top:2px solid #e6edf3"></i>BTC daily close (USD)</span><span><i style="border-top:2px solid #ff79c6"></i><span id="pathlgd3">Floor → fair value path (straight on log scale)</span></span><span><i style="border-top:2px solid #2aa198"></i>200-day SMA</span><span><i style="border-top:2px solid #f7931a"></i>Power-law fair value: 1.0117e-17 × d^5.82</span><span><i style="border-top:2px solid #58a6ff"></i>Power-law floor: fair value × 0.42</span><span><i style="border-top:2px solid #f85149"></i>Upper bound (2.4x fair value)</span><span><i style="border-top:1px solid #b1bac4"></i>Current BTC price (live)</span><span><i style="width:8px;height:8px;background:#ffd700;transform:rotate(45deg);margin:0 10px 0 4px"></i>Bitcoin halving (Apr 20, 2024)</span><span><i class="bx" style="background:rgba(63,185,80,0.35)"></i>Bull phase (halving → 18 months, and 30 months → next halving)</span><span><i class="bx" style="background:rgba(248,81,73,0.35)"></i>Bear phase (18 → 30 months)</span></div></details></div>
 <div class="card"><div class="lbl" style="margin-bottom:10px">BTC → IBIT price map</div>
 <div class="sub" id="mapnote" style="margin-bottom:10px">Waiting for live BTC and IBIT prices…</div>
 <table id="maptbl" style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums"><thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">If BTC is</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #2a3140;color:#8b95a7;font-weight:500">IBIT would be about</th></tr></thead><tbody id="mapbody"></tbody></table></div>
@@ -104,7 +105,7 @@ function render(p,abs,pct,name){
 
 const compactUsd=v=>{const f=(n,u)=>'$'+(+n.toFixed(2)).toString()+u;return v>=1e9?f(v/1e9,'B'):v>=1e6?f(v/1e6,'M'):v>=1e3?f(v/1e3,'K'):'$'+(+v.toFixed(2))};
 const plv=(t,k)=>k*1.0117e-17*((t-GEN)/DAY)**5.82;
-let chart,chart2,PATH=null,hist=[];
+let chart,chart2,chart3,PATHS={},hist=[];
 async function initChart(){
  try{hist=await j('history.json')}catch(e){console.warn('history',e)}
  renderCagr();
@@ -164,12 +165,13 @@ async function initChart(){
    scales:{x:{type:'time',min:start,max:end,time:{unit:'year'}},
     y:{type:'logarithmic',min:1000,
      ticks:{callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?compactUsd(v):''}}}}}});
- // ---- Chart 2: Oct 1, 2026 → Nov 1, 2029, same series/plugins + floor → fair value path ----
- try{const cv2=document.getElementById('chart2');if(cv2){
-  const s2=Date.UTC(2026,9,1),e2=Date.UTC(2029,10,1),Y2MIN=40000,Y2MAX=1e6;
-  // Green span: merge contiguous bull bands from BANDS; take the one that starts in Oct 2026
+ // ---- Path charts (chart 2: Oct 1, 2026 → Nov 1, 2029; chart 3: Oct 1, 2022 → Nov 1, 2025): same series/plugins + floor → fair value path ----
+ // cfg: canvas id, hover-strip id, path-legend id, x-range [s2,e2], y-range, and the year/month (UTC, 0-based) the green area starts
+ const mkPathChart=cfg=>{try{const cv2=document.getElementById(cfg.canvas);if(!cv2)return null;
+  const s2=cfg.s,e2=cfg.e,Y2MIN=cfg.ymin,Y2MAX=cfg.ymax;
+  // Green span: merge contiguous bull bands from BANDS; take the one that starts in cfg.gy/cfg.gm
   const GREEN=[];for(const [a0,b0,k] of BANDS){if(k!=='bull')continue;const L=GREEN[GREEN.length-1];if(L&&Math.abs(L[1]-a0)<DAY)L[1]=b0;else GREEN.push([a0,b0])}
-  const g=GREEN.find(([a0])=>{const d=new Date(a0);return d.getUTCFullYear()===2026&&d.getUTCMonth()===9});
+  const g=GREEN.find(([a0])=>{const d=new Date(a0);return d.getUTCFullYear()===cfg.gy&&d.getUTCMonth()===cfg.gm});
   const days=[];for(let t=s2;t<=e2;t+=DAY)days.push(t);
   const pastD=days.filter(t=>t<now).concat(now<=e2&&now>=s2?[now]:[]),futD=(now>=s2&&now<=e2?[now]:[]).concat(days.filter(t=>t>now));
   const ds2=[
@@ -183,21 +185,23 @@ async function initChart(){
    {label:'Upper bound — projection',data:line(futD,2.4),borderColor:UB+'99',borderDash:[6,5],borderWidth:1.6,pointRadius:0}];
   if(g){const [pa,pb]=g,ya=plv(pa,0.42),yb=plv(pb,1),la=Math.log(ya),lb=Math.log(yb);
    const pts=days.filter(t=>t>pa&&t<pb).map(t=>({x:t,y:Math.exp(la+(lb-la)*(t-pa)/(pb-pa))}));pts.unshift({x:pa,y:ya});pts.push({x:pb,y:yb});
-   PATH={start:pa,end:pb,y0:ya,y1:yb};
+   PATHS[cfg.canvas]={start:pa,end:pb,y0:ya,y1:yb};
    ds2.splice(1,0,{label:'Floor → fair value path',data:pts,borderColor:'#ff79c6',borderWidth:2,pointRadius:0});
-   const fd=t=>new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}),pl=document.getElementById('pathlgd');
+   const fd=t=>new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'}),pl=document.getElementById(cfg.lgd);
    if(pl)pl.textContent=`Floor → fair value path: ${usd(ya)} (${fd(pa)}) → ${usd(yb)} (${fd(pb)}), straight on log scale`}
   const nice=[1,2,5];
-  chart2=new Chart(cv2,{type:'line',data:{datasets:ds2},plugins:[cycles,vmark,curline,halvmark],
+  return new Chart(cv2,{type:'line',data:{datasets:ds2},plugins:[cycles,vmark,curline,halvmark],
    options:{responsive:true,maintainAspectRatio:false,animation:false,parsing:false,normalized:true,
     interaction:{mode:'nearest',axis:'x',intersect:false},
     plugins:{legend:{display:false},
-     tooltip:{enabled:false,external:mkHover(document.getElementById('hoverbar2')),callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
+     tooltip:{enabled:false,external:mkHover(document.getElementById(cfg.hb)),callbacks:{title:i=>new Date(i[0].parsed.x).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),
       label:c=>`${c.dataset.label.split(':')[0]}: ${usd(c.parsed.y,c.parsed.y<10?2:0)}`}}},
     scales:{x:{type:'time',min:s2,max:e2,time:{unit:'month',displayFormats:{month:'MMM yyyy'}},ticks:{maxRotation:0,autoSkip:true,autoSkipPadding:14}},
      y:{type:'logarithmic',min:Y2MIN,max:Y2MAX,
       ticks:{callback:v=>{const e=Math.floor(Math.log10(v)+1e-9),m=v/10**e;return nice.some(n=>Math.abs(m-n)<1e-6)?compactUsd(v):''}}}}}});
- }}catch(e){console.warn('chart2',e)}
+ }catch(e){console.warn(cfg.canvas,e);return null}};
+ chart2=mkPathChart({canvas:'chart2',hb:'hoverbar2',lgd:'pathlgd',s:Date.UTC(2026,9,1),e:Date.UTC(2029,10,1),ymin:40000,ymax:1e6,gy:2026,gm:9});
+ chart3=mkPathChart({canvas:'chart3',hb:'hoverbar3',lgd:'pathlgd3',s:Date.UTC(2022,9,1),e:Date.UTC(2025,10,1),ymin:10000,ymax:5e5,gy:2022,gm:10});
 }
 /* 200-day SMA card: shows the last point of the chart's 200-day SMA line (LIVE.sma), compared with the live price */
 function renderSma(){try{const v=$('sma200'),rel=$('smarel');if(!v||!rel)return;const s=LIVE.sma,p=LIVE.btc;
@@ -206,7 +210,7 @@ function renderSma(){try{const v=$('sma200'),rel=$('smarel');if(!v||!rel)return;
  if(!(p>0)){rel.className='sub';rel.textContent='Waiting for live price…';return}
  const d=(p/s.y-1)*100,up=d>=0;rel.className='sub '+(up?'up':'dn');rel.textContent=`Price ${up?'+':'−'}${Math.abs(d).toFixed(1)}% ${up?'above':'below'} SMA`;
 }catch(e){console.warn('sma',e)}}
-function pushLive(p){const t=Date.now();for(const c of [chart,chart2]){if(!c)continue;try{const d=c.data.datasets[0].data;
+function pushLive(p){const t=Date.now();for(const c of [chart,chart2,chart3]){if(!c)continue;try{const d=c.data.datasets[0].data;
  if(d.length&&t-d[d.length-1].x<DAY/2&&d[d.length-1].live)d[d.length-1]={x:t,y:p,live:1};else d.push({x:t,y:p,live:1});c.update('none')}catch(e){console.warn('pushLive',e)}}}
 initChart();
 
