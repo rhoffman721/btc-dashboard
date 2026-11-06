@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-11-05T23:39:58Z",
+ "fetchedUtc": "2026-11-06T00:22:54Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -9,7 +9,7 @@
    "price": 99.59,
    "change": null,
    "changePct": null,
-   "asOf": "Nov 5, 2026 6:40 PM ET",
+   "asOf": "Nov 5, 2026 7:22 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -20,7 +20,7 @@
    "price": 95.97,
    "change": -0.16,
    "changePct": -0.17,
-   "asOf": "Nov 5, 2026 6:40 PM ET",
+   "asOf": "Nov 5, 2026 7:22 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -31,7 +31,7 @@
    "price": 43.0926,
    "change": 0.0576,
    "changePct": 0.13,
-   "asOf": "Nov 5, 2026 6:39 PM ET",
+   "asOf": "Nov 5, 2026 7:22 PM ET",
    "realTime": true,
    "status": "After-Hours",
    "source": "Nasdaq"
@@ -40,7 +40,7 @@
    "symbol": "IBIT280616C00050000",
    "name": "IBIT Jun 16 '28 $50 Call",
    "underlying": "IBIT",
-   "underlyingPrice": 42.831,
+   "underlyingPrice": 43.05,
    "strike": 50.0,
    "expiry": "2028-06-16",
    "type": "call",
@@ -53,7 +53,7 @@
    "volume": 105.0,
    "openInterest": 8515.0,
    "iv": 0.4508,
-   "asOfUtc": "2026-11-05 23:39:33",
+   "asOfUtc": "2026-11-06 00:22:35",
    "delayed": "15-min delayed (CBOE)"
   }
  }
