@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-11-12T21:12:01Z",
+ "fetchedUtc": "2026-11-12T22:02:35Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -9,7 +9,7 @@
    "price": 99.96,
    "change": null,
    "changePct": null,
-   "asOf": "Nov 12, 2026 4:12 PM ET",
+   "asOf": "Nov 12, 2026 5:02 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -20,7 +20,7 @@
    "price": 98.0,
    "change": 0.05,
    "changePct": 0.05,
-   "asOf": "Nov 12, 2026 4:12 PM ET",
+   "asOf": "Nov 12, 2026 5:02 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF",
    "exchange": "NASDAQ-GM",
-   "price": 40.36,
-   "change": null,
-   "changePct": null,
-   "asOf": "Nov 12, 2026 4:11 PM ET",
+   "price": 40.4169,
+   "change": 0.0569,
+   "changePct": 0.14,
+   "asOf": "Nov 12, 2026 5:02 PM ET",
    "realTime": true,
    "status": "After-Hours",
    "source": "Nasdaq"
@@ -40,20 +40,20 @@
    "symbol": "IBIT280616C00050000",
    "name": "IBIT Jun 16 '28 $50 Call",
    "underlying": "IBIT",
-   "underlyingPrice": 40.375,
+   "underlyingPrice": 40.4398,
    "strike": 50.0,
    "expiry": "2028-06-16",
    "type": "call",
-   "last": 7.35,
-   "lastTradeTime": "2026-11-12T15:47:10",
-   "bid": 7.3,
-   "ask": 7.45,
-   "change": -0.85,
-   "changePct": -10.3659,
-   "volume": 66.0,
+   "last": 7.4,
+   "lastTradeTime": "2026-11-12T15:59:13",
+   "bid": 7.2,
+   "ask": 7.55,
+   "change": -0.8,
+   "changePct": -9.7561,
+   "volume": 67.0,
    "openInterest": 8965.0,
-   "iv": 0.4556,
-   "asOfUtc": "2026-11-12 21:11:29",
+   "iv": 0.4552,
+   "asOfUtc": "2026-11-12 22:02:31",
    "delayed": "15-min delayed (CBOE)"
   }
  }
