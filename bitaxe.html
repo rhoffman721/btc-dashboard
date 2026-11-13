@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bitaxe · BTC Monitor</title>
+<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--txt:#e6edf3;--mut:#8b949e;--up:#3fb950;--dn:#f85149;--acc:#f7931a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;padding:32px 16px}
+main{width:100%;max-width:980px}
+h1{font-size:18px;font-weight:600;color:var(--mut);margin:0 0 8px;letter-spacing:.5px}h1 b{color:var(--acc)}
+a{color:var(--acc)}
+.back{color:var(--mut);font-size:14px;margin:0 0 20px}
+.back a{color:inherit}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.lbl{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.big{font-size:30px;font-weight:700;margin-top:4px}
+.sub{color:var(--mut);font-size:14px;margin-top:4px}
+.up{color:var(--up)}.dn{color:var(--dn)}.warn{color:var(--acc)}
+.banner{background:#3d1214;border:1px solid var(--dn);color:var(--dn);border-radius:14px;padding:16px 20px;margin-bottom:16px;font-weight:700;letter-spacing:.4px;text-align:center}
+.banner b{font-size:18px;letter-spacing:1px}
+.upd{color:var(--mut);font-size:13px;margin:0 0 16px;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body data-bitaxe="v1">
+<main>
+<h1><b>₿</b> Bitaxe</h1>
+<p class="back"><a href="index.html">← Bitcoin Monitor</a></p>
+<div class="banner" id="stale" hidden><b>STALE</b><div style="font-weight:500;margin-top:4px">Last update is more than 45 minutes old.</div></div>
+<div class="card" id="wait">Loading…</div>
+<p class="upd" id="upd" hidden></p>
+<div id="stats" hidden>
+  <div class="card"><div class="lbl">Health</div><div class="big" id="health">—</div><div class="sub" id="healthsub"></div></div>
+  <div class="grid" id="metrics">
+    <div class="card"><div class="lbl">Hashrate</div><div class="big" id="hr">—</div><div class="sub" id="hrsub"></div></div>
+    <div class="card"><div class="lbl">Shares</div><div class="big" id="shares">—</div><div class="sub" id="sharesub"></div></div>
+    <div class="card"><div class="lbl">Best difficulty</div><div class="big" id="best">—</div><div class="sub" id="bestsub"></div></div>
+    <div class="card"><div class="lbl">Temperature</div><div class="big" id="temp">—</div><div class="sub" id="tempsub"></div></div>
+    <div class="card"><div class="lbl">Power</div><div class="big" id="power">—</div><div class="sub" id="powersub"></div></div>
+    <div class="card"><div class="lbl">Fan</div><div class="big" id="fan">—</div><div class="sub" id="fansub"></div></div>
+    <div class="card"><div class="lbl">Wi-Fi</div><div class="big" id="wifi">—</div><div class="sub" id="wifisub"></div></div>
+    <div class="card"><div class="lbl">Uptime</div><div class="big" id="up" style="font-size:22px">—</div><div class="sub" id="upsub"></div></div>
+    <div class="card"><div class="lbl">Pool</div><div class="big" id="pool" style="font-size:22px">—</div><div class="sub" id="poolsub"></div></div>
+    <div class="card"><div class="lbl">Device</div><div class="big" id="asic" style="font-size:22px">—</div><div class="sub" id="devsub"></div></div>
+  </div>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const STALE_MS=45*60*1000;
+const num=v=>typeof v==='number'&&isFinite(v);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+function diffHuman(n){
+  if(!num(n))return '—';
+  const sign=n<0?'-':'',a=Math.abs(n),units=[[1e15,'P'],[1e12,'T'],[1e9,'G'],[1e6,'M'],[1e3,'k']];
+  for(const [v,s] of units) if(a>=v){const t=a/v; return sign+t.toFixed(1).replace(/\.0$/,'')+s}
+  return sign+Math.round(a).toLocaleString('en-US');
+}
+function hashRate(ghs,places){
+  if(!num(ghs))return '—';
+  if(ghs>=1000){const th=ghs/1000,p=places==null?(th>=100?0:1):places; return th.toFixed(p).replace(/\.0$/,'')+' TH/s'}
+  return (places>0?ghs.toFixed(places):String(Math.round(ghs)))+' GH/s';
+}
+function uptime(s){
+  s=Math.floor(s);const d=Math.floor(s/86400),h=Math.floor((s%86400)/3600);
+  return d+' '+(d===1?'day':'days')+' '+h+' '+(h===1?'hour':'hours');
+}
+function volts(mv){
+  if(!num(mv))return '—';
+  if(mv>=1000)return (mv/1000).toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+' V';
+  return Math.round(mv)+' mV';
+}
+function reasonsFor(d,age){
+  const reasons=[], stale=!isFinite(age)||age>STALE_MS;
+  if(d.online!==true) reasons.push('Offline');
+  if(stale) reasons.push(isFinite(age)?'Updated '+Math.max(0,Math.floor(age/60000))+' min ago':'No update time');
+  if(d.online===true){
+    const exp=d.expected_hashrate_ghs, h10=d.hashrate_10m_ghs;
+    if(!(num(exp)&&exp>0&&num(h10)&&h10>=exp*0.7))
+      reasons.push(num(exp)&&exp>0&&num(h10)?'10m hashrate is '+Math.floor(h10/exp*100)+'% of expected':'10m hashrate below expected');
+    if(!(num(d.temp_c)&&d.temp_c<70)) reasons.push(num(d.temp_c)?'Chip '+d.temp_c.toFixed(1)+'°C':'Chip temperature unknown');
+    if(!(num(d.vr_temp_c)&&d.vr_temp_c<85)) reasons.push(num(d.vr_temp_c)?'VR '+d.vr_temp_c.toFixed(1)+'°C':'VR temperature unknown');
+    if(d.mining_paused!==false) reasons.push(d.mining_paused===true?'Mining paused':'Mining state unknown');
+    if(d.overheat_mode!==0) reasons.push(typeof d.overheat_mode==='number'?'Overheat mode '+d.overheat_mode:'Overheat mode unknown');
+  }
+  return reasons;
+}
+let DATA;
+function paint(){
+  const d=DATA, wait=$('wait'), stats=$('stats'), stale=$('stale'), upd=$('upd');
+  if(!d||d.updated==null&&d.online==null){
+    wait.hidden=false; wait.textContent=d?'Waiting for first push from the Bitaxe.':'Couldn’t load Bitaxe stats. Retrying in 60 s.';
+    stats.hidden=true; stale.hidden=true; upd.hidden=true; return;
+  }
+  const t=Date.parse(d.updated);
+  if(d.updated!=null&&!isFinite(t)){wait.hidden=false; wait.textContent='Couldn’t load Bitaxe stats. Retrying in 60 s.'; stats.hidden=true; stale.hidden=true; upd.hidden=true; return}
+  wait.hidden=true; stats.hidden=false;
+  const age=isFinite(t)?Date.now()-t:NaN, mins=isFinite(age)?Math.max(0,Math.floor(age/60000)):null;
+  stale.hidden=!(isFinite(age)&&age>STALE_MS);
+  upd.hidden=!isFinite(t);
+  if(isFinite(t)) upd.textContent='Last update: '+new Date(t).toLocaleString()+' ('+(mins<1?'just now':mins+' min ago')+')';
+  const reasons=reasonsFor(d,age), health=$('health'), ok=!reasons.length;
+  health.textContent=d.online!==true?'Offline':ok?'Healthy':'Check';
+  health.className='big '+(d.online!==true||!ok?'dn':'up');
+  if(ok){
+    const exp=d.expected_hashrate_ghs, h10=d.hashrate_10m_ghs, pct=num(exp)&&exp>0&&num(h10)?Math.round(h10/exp*100):null;
+    $('healthsub').textContent=[pct!=null?pct+'% of expected hashrate':null, num(d.temp_c)?'chip '+d.temp_c.toFixed(1)+'°C':null, num(d.vr_temp_c)?'VR '+d.vr_temp_c.toFixed(1)+'°C':null].filter(Boolean).join(' · ');
+  }else $('healthsub').textContent=reasons.join(' · ');
+  const metrics=num(d.hashrate_ghs)||num(d.temp_c)||num(d.power_w)||d.asic||num(d.shares_accepted);
+  $('metrics').hidden=!metrics;
+  if(!metrics) return;
+  $('hr').textContent=hashRate(d.hashrate_ghs,1);
+  $('hrsub').textContent=[
+    num(d.hashrate_1m_ghs)?'1m '+hashRate(d.hashrate_1m_ghs,1):null,
+    num(d.hashrate_10m_ghs)?'10m '+hashRate(d.hashrate_10m_ghs,1):null,
+    num(d.hashrate_1h_ghs)?'1h '+hashRate(d.hashrate_1h_ghs,1):null,
+    num(d.expected_hashrate_ghs)?'expected '+hashRate(d.expected_hashrate_ghs,1):null
+  ].filter(Boolean).join(' · ');
+  $('shares').textContent=num(d.shares_accepted)?fmt(d.shares_accepted):'—';
+  $('sharesub').textContent=[
+    num(d.shares_accepted)?'accepted':null,
+    num(d.shares_rejected)?fmt(d.shares_rejected)+' rejected':null,
+    num(d.error_pct)?d.error_pct.toFixed(1)+'% error':null,
+    num(d.blocks_found)?fmt(d.blocks_found)+' blocks found':(d.blocks_found===0?'0 blocks found':null)
+  ].filter(Boolean).join(' · ');
+  $('best').textContent=diffHuman(d.best_diff);
+  $('best').title=num(d.best_diff)?fmt(d.best_diff):'';
+  $('bestsub').textContent=[
+    num(d.best_diff)?'all-time '+fmt(d.best_diff):null,
+    num(d.best_session_diff)?'session '+diffHuman(d.best_session_diff)+' · '+fmt(d.best_session_diff):null
+  ].filter(Boolean).join(' · ');
+  const temp=$('temp');
+  if(num(d.temp_c)){temp.textContent=d.temp_c.toFixed(1)+'°C'; temp.className='big'+(d.temp_c>=70?' dn':'')}
+  else{temp.textContent='—'; temp.className='big'}
+  const vrHot=num(d.vr_temp_c)&&d.vr_temp_c>=85;
+  $('tempsub').className='sub'+(vrHot?' dn':'');
+  $('tempsub').textContent=num(d.vr_temp_c)?'VR '+d.vr_temp_c.toFixed(1)+'°C':'';
+  $('power').textContent=num(d.power_w)?d.power_w.toFixed(1)+' W':'—';
+  $('powersub').textContent=[
+    num(d.voltage_mv)?volts(d.voltage_mv):null,
+    num(d.core_voltage_mv)?'core '+volts(d.core_voltage_mv):null,
+    num(d.frequency_mhz)?fmt(d.frequency_mhz)+' MHz':null
+  ].filter(Boolean).join(' · ');
+  $('fan').textContent=num(d.fan_pct)?Math.round(d.fan_pct)+'%':'—';
+  $('fansub').textContent=num(d.fan_rpm)?fmt(d.fan_rpm)+' rpm':'';
+  $('wifi').textContent=num(d.wifi_rssi)?d.wifi_rssi+' dBm':'—';
+  $('wifisub').textContent='';
+  $('up').textContent=num(d.uptime_s)?uptime(d.uptime_s):'—';
+  $('upsub').textContent=d.mining_paused===true?'Mining paused':d.mining_paused===false?'Mining':'';
+  const pool=$('pool');
+  pool.textContent=d.pool||'—';
+  const fb=d.using_fallback===true?'Using fallback':d.using_fallback===false?'Primary pool':null;
+  $('poolsub').className='sub'+(d.using_fallback===true?' warn':'');
+  $('poolsub').textContent=[
+    fb,
+    num(d.pool_difficulty)?'pool difficulty '+diffHuman(d.pool_difficulty)+' ('+fmt(d.pool_difficulty)+')':null,
+    num(d.network_difficulty)?'network '+diffHuman(d.network_difficulty):null,
+    num(d.block_height)?'block '+fmt(d.block_height):null
+  ].filter(Boolean).join(' · ');
+  $('asic').textContent=d.asic||'—';
+  $('devsub').textContent=[
+    d.firmware||null,
+    d.board?'board '+d.board:null,
+    typeof d.overheat_mode==='number'?'overheat mode '+d.overheat_mode:null
+  ].filter(Boolean).join(' · ');
+}
+async function load(){
+  try{
+    const r=await fetch('data/bitaxe.json?t='+Date.now(),{cache:'no-store'});
+    if(r.status===404) DATA=null;
+    else if(!r.ok) throw 0;
+    else DATA=await r.json();
+  }catch(e){if(DATA===undefined) DATA=null}
+  paint();
+}
+load(); setInterval(load,60000);
+</script>
+</body>
+</html>
