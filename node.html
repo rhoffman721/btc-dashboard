@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My node · BTC Monitor</title>
+<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--txt:#e6edf3;--mut:#8b949e;--up:#3fb950;--dn:#f85149;--acc:#f7931a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;justify-content:center;padding:32px 16px}
+main{width:100%;max-width:980px}
+h1{font-size:18px;font-weight:600;color:var(--mut);margin:0 0 8px;letter-spacing:.5px}h1 b{color:var(--acc)}
+a{color:var(--acc)}
+.back{color:var(--mut);font-size:14px;margin:0 0 20px}
+.back a{color:inherit}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.lbl{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.big{font-size:30px;font-weight:700;margin-top:4px}
+.sub{color:var(--mut);font-size:14px;margin-top:4px}
+.up{color:var(--up)}.dn{color:var(--dn)}.warn{color:var(--acc)}
+.banner{background:#3d1214;border:1px solid var(--dn);color:var(--dn);border-radius:14px;padding:16px 20px;margin-bottom:16px;font-weight:700;letter-spacing:.4px;text-align:center}
+.banner b{font-size:18px;letter-spacing:1px}
+.upd{color:var(--mut);font-size:13px;margin:0 0 16px;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body data-node-page="v1">
+<main>
+<h1><b>₿</b> My node</h1>
+<p class="back"><a href="index.html">← Bitcoin Monitor</a></p>
+<div class="banner" id="stale" hidden><b>STALE</b><div style="font-weight:500;margin-top:4px">Last update is more than 45 minutes old.</div></div>
+<div class="card" id="wait">Waiting for first push from the node.</div>
+<p class="upd" id="upd" hidden></p>
+<div id="stats" hidden>
+  <div class="card"><div class="lbl">Sync status</div><div class="big" id="sync">—</div><div class="sub" id="syncsub"></div></div>
+  <div class="grid">
+    <div class="card"><div class="lbl">Block height</div><div class="big" id="height">—</div><div class="sub" id="behind"></div></div>
+    <div class="card"><div class="lbl">Peers</div><div class="big" id="peers">—</div><div class="sub" id="peersub"></div></div>
+    <div class="card"><div class="lbl">Mempool</div><div class="big" id="mempool">—</div><div class="sub" id="memsub"></div></div>
+    <div class="card"><div class="lbl">Node version</div><div class="big" id="ver" style="font-size:22px">—</div><div class="sub" id="versub"></div></div>
+    <div class="card"><div class="lbl">Disk</div><div class="big" id="disk">—</div><div class="sub" id="disksub"></div></div>
+    <div class="card"><div class="lbl">CPU temperature</div><div class="big" id="temp">—</div><div class="sub" id="tempsub"></div></div>
+    <div class="card"><div class="lbl">Uptime</div><div class="big" id="up">—</div><div class="sub" id="upsub"></div></div>
+  </div>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const GB=1024**3, STALE_MS=45*60*1000;
+const num=v=>typeof v==='number'&&isFinite(v);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const gb=b=>(b/GB).toFixed(1)+' GB';
+function feeSat(btcPerKvB){const s=btcPerKvB*1e5;return (Math.round(s*100)/100).toString()}
+function uptime(s){
+  s=Math.floor(s);const d=Math.floor(s/86400),h=Math.floor((s%86400)/3600);
+  const du=d===1?'day':'days',hu=h===1?'hour':'hours';
+  return d+' '+du+' '+h+' '+hu;
+}
+function versionLabel(v){return String(v).replace(/^\//,'').replace(/\/$/,'')}
+let TIP=null, DATA=null;
+function paint(){
+  const d=DATA, wait=$('wait'), stats=$('stats'), stale=$('stale'), upd=$('upd');
+  if(!d||d.updated==null){
+    wait.hidden=false; wait.textContent=d?'Waiting for first push from the node.':'Couldn’t load node stats. Retrying in 60 s.';
+    stats.hidden=true; stale.hidden=true; upd.hidden=true; return;
+  }
+  const t=Date.parse(d.updated);
+  if(!isFinite(t)){wait.hidden=false; wait.textContent='Couldn’t load node stats. Retrying in 60 s.'; stats.hidden=true; stale.hidden=true; upd.hidden=true; return}
+  wait.hidden=true; stats.hidden=false;
+  const age=Date.now()-t, mins=Math.max(0,Math.floor(age/60000));
+  stale.hidden=age<=STALE_MS;
+  upd.hidden=false;
+  upd.textContent='Last update: '+new Date(t).toLocaleString()+' ('+(mins<1?'just now':mins+' min ago')+')';
+  const blocks=num(d.blocks)?d.blocks:null, headers=num(d.headers)?d.headers:null;
+  const synced=d.ibd===false&&blocks!=null&&headers!=null&&blocks===headers&&headers>0;
+  const sync=$('sync');
+  if(synced){sync.textContent='Synced'; sync.className='big up'; $('syncsub').textContent=headers!=null?fmt(headers)+' blocks':''}
+  else{
+    const pct=num(d.progress)?(d.progress*100).toFixed(2):null;
+    sync.textContent=pct!=null?'Syncing '+pct+'%':'Syncing';
+    sync.className='big warn';
+    $('syncsub').textContent=d.ibd?'Initial block download':'Blocks and headers differ';
+  }
+  $('height').textContent=blocks!=null&&headers!=null?fmt(blocks)+' / '+fmt(headers):(blocks!=null?fmt(blocks):'—');
+  const behind=$('behind');
+  if(TIP!=null&&blocks!=null){const n=TIP-blocks; behind.textContent=n>0?fmt(n)+' blocks behind the network':n===0?'At the network tip':fmt(-n)+' blocks ahead of the reported tip'}
+  else behind.textContent='';
+  const peers=num(d.connections)?d.connections:(num(d.connections_in)&&num(d.connections_out)?d.connections_in+d.connections_out:null);
+  $('peers').textContent=peers!=null?fmt(peers):'—';
+  $('peersub').textContent=(num(d.connections_in)?fmt(d.connections_in):'—')+' in · '+(num(d.connections_out)?fmt(d.connections_out):'—')+' out';
+  $('mempool').textContent=num(d.mempool_tx)?fmt(d.mempool_tx)+' tx':'—';
+  const mb=num(d.mempool_bytes)?(d.mempool_bytes/1e6).toFixed(1)+' MB':null;
+  const fee=num(d.mempool_minfee)?feeSat(d.mempool_minfee)+' sat/vB':null;
+  $('memsub').textContent=[mb,fee?'min fee '+fee:null].filter(Boolean).join(' · ');
+  $('ver').textContent=d.version?versionLabel(d.version):'—';
+  $('versub').textContent='';
+  $('disk').textContent=num(d.size_on_disk)?gb(d.size_on_disk)+' chain':'—';
+  const free=$('disksub'), low=num(d.disk_free_bytes)&&d.disk_free_bytes<50*GB;
+  const bits=[];
+  if(num(d.disk_free_bytes))bits.push(gb(d.disk_free_bytes)+' free');
+  if(d.pruned===true)bits.push('pruned'); else if(d.pruned===false)bits.push('not pruned');
+  free.className='sub'+(low?' dn':'');
+  free.textContent=bits.join(' · ');
+  const temp=$('temp');
+  if(num(d.cpu_temp_c)){const hot=d.cpu_temp_c>75; temp.textContent=d.cpu_temp_c.toFixed(1)+'°C'; temp.className='big'+(hot?' dn':''); $('tempsub').textContent=hot?'Above 75°C':''}
+  else{temp.textContent='—'; temp.className='big'; $('tempsub').textContent=''}
+  $('up').textContent=num(d.uptime_s)?uptime(d.uptime_s):'—';
+  $('upsub').textContent='';
+}
+async function tip(){
+  try{const r=await fetch('https://mempool.space/api/blocks/tip/height',{cache:'no-store'}); if(!r.ok)throw 0;
+    const n=parseInt(await r.text(),10); TIP=n>0?n:null}catch(e){TIP=null}
+}
+async function load(){
+  try{const r=await fetch('data/node.json?t='+Date.now(),{cache:'no-store'}); if(!r.ok)throw 0; DATA=await r.json()}
+  catch(e){if(!DATA)DATA=null}
+  await tip();
+  paint();
+}
+load(); setInterval(load,60000);
+</script>
+</body>
+</html>
