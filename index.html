@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-title-price="v1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -98,11 +98,18 @@ async function update(){
  for(const [name,fn] of sources){
   try{const {p,abs,pct,ts}=await fn(); if(!(p>0))throw 0; render(p,abs,pct,name); PUPD.t=(ts>0&&ts<=Date.now()+6e4)?ts:Date.now(); PUPD.src=ts>0?'source':'fetch'; PUPD.stale=false; renderPupd(); return}catch(e){console.warn(name,e)}
  }
- $('chg').textContent='Price sources unavailable — retrying in 60 s'; PUPD.stale=true; renderPupd();
+ $('chg').textContent='Price sources unavailable — retrying in 60 s'; document.title='BTC Monitor'; PUPD.stale=true; renderPupd();
 }
+function priceTitle(p){if(!(p>0))return 'BTC Monitor';
+ let s;if(p>=1e6)s=(p/1e6).toFixed(2)+'M';
+ else if(p>=1e5)s=Math.round(p/1000)+'k';
+ else if(p>=1000){const t=Math.round(p/100);s=t%10===0?(t/10)+'k':(t/10).toFixed(1)+'k'}
+ else s=String(Math.round(p));
+ return s+' - BTC Monitor'}
 function render(p,abs,pct,name){
  const d=(Date.now()-GEN)/DAY, ld=Math.log10(d);
  const fair=1.0117e-17*10**(5.82*ld), floor=fair*0.42;
+ document.title=priceTitle(p);
  $('price').textContent=usd(p,2);LIVE.btc=p;renderMap();
  const up=abs>=0;$('chg').className='chg '+(up?'up':'dn');
  $('chg').textContent=`${up?'▲ +':'▼ −'}${usd(Math.abs(abs),2)} (${up?'+':'−'}${Math.abs(pct).toFixed(2)}%) · 24h`;
