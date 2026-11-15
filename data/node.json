@@ -1,19 +1,19 @@
 {
-  "updated": "2026-11-15T14:00:01Z",
-  "blocks": 975969,
-  "headers": 975969,
+  "updated": "2026-11-15T14:15:01Z",
+  "blocks": 975970,
+  "headers": 975970,
   "progress": 1,
   "ibd": false,
   "pruned": false,
-  "size_on_disk": 892736157568,
+  "size_on_disk": 892737903346,
   "version": "/Satoshi:32.1.0/",
   "connections": 15,
   "connections_in": 5,
   "connections_out": 10,
-  "mempool_tx": 69059,
-  "mempool_bytes": 12823471,
+  "mempool_tx": 69487,
+  "mempool_bytes": 13018839,
   "mempool_minfee": 0.00000100,
-  "uptime_s": 144006,
-  "disk_free_bytes": 832585580544,
-  "cpu_temp_c": 64.2
+  "uptime_s": 144906,
+  "disk_free_bytes": 832404860928,
+  "cpu_temp_c": 63.1
 }
