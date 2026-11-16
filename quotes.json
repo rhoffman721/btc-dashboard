@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-11-16T01:12:43Z",
+ "fetchedUtc": "2026-11-16T02:29:16Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -53,7 +53,7 @@
    "volume": 163.0,
    "openInterest": 9005.0,
    "iv": 0.4617,
-   "asOfUtc": "2026-11-15 00:20:10",
+   "asOfUtc": "2026-11-16 02:11:59",
    "delayed": "15-min delayed (CBOE)"
   }
  }
