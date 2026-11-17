@@ -1,15 +1,15 @@
 {
- "fetchedUtc": "2026-11-17T03:14:02Z",
+ "fetchedUtc": "2026-11-17T04:16:18Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
    "symbol": "STRC",
    "name": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock",
    "exchange": "NASDAQ-GS",
-   "price": 99.91,
-   "change": 0.05,
-   "changePct": 0.05,
-   "asOf": "Nov 13, 2026",
+   "price": 99.12,
+   "change": -0.76,
+   "changePct": -0.76,
+   "asOf": "Nov 16, 2026",
    "realTime": false,
    "status": "Closed"
   },
