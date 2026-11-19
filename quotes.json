@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-11-19T06:48:45Z",
+ "fetchedUtc": "2026-11-19T08:10:59Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -40,7 +40,7 @@
    "symbol": "IBIT280616C00050000",
    "name": "IBIT Jun 16 '28 $50 Call",
    "underlying": "IBIT",
-   "underlyingPrice": 35.69,
+   "underlyingPrice": 35.76,
    "strike": 50.0,
    "expiry": "2028-06-16",
    "type": "call",
@@ -52,8 +52,8 @@
    "changePct": -7.76256,
    "volume": 84.0,
    "openInterest": 9138.0,
-   "iv": 0.4736,
-   "asOfUtc": "2026-11-19 01:05:11",
+   "iv": 0.473,
+   "asOfUtc": "2026-11-19 07:17:16",
    "delayed": "15-min delayed (CBOE)"
   }
  }
