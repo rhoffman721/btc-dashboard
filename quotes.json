@@ -1,15 +1,15 @@
 {
- "fetchedUtc": "2026-11-19T23:20:57Z",
+ "fetchedUtc": "2026-11-20T00:08:47Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
    "symbol": "STRC",
    "name": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock",
    "exchange": "NASDAQ-GS",
-   "price": 94.6,
-   "change": -0.06,
-   "changePct": -0.06,
-   "asOf": "Nov 19, 2026 6:20 PM ET",
+   "price": 94.5,
+   "change": -0.16,
+   "changePct": -0.17,
+   "asOf": "Nov 19, 2026 7:08 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -20,7 +20,7 @@
    "price": 89.27,
    "change": 0.9,
    "changePct": 1.02,
-   "asOf": "Nov 19, 2026 6:21 PM ET",
+   "asOf": "Nov 19, 2026 7:08 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF",
    "exchange": "NASDAQ-GM",
-   "price": 35.1,
-   "change": 0.02,
-   "changePct": 0.06,
-   "asOf": "Nov 19, 2026 6:20 PM ET",
+   "price": 35.0386,
+   "change": -0.0414,
+   "changePct": -0.12,
+   "asOf": "Nov 19, 2026 7:08 PM ET",
    "realTime": true,
    "status": "After-Hours",
    "source": "Nasdaq"
