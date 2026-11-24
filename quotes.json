@@ -1,15 +1,15 @@
 {
- "fetchedUtc": "2026-11-24T19:28:17Z",
+ "fetchedUtc": "2026-11-24T20:25:36Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
    "symbol": "STRC",
    "name": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock",
    "exchange": "NASDAQ-GS",
-   "price": 97.91,
-   "change": -0.35,
-   "changePct": -0.36,
-   "asOf": "Nov 24, 2026 2:28 PM ET",
+   "price": 97.87,
+   "change": -0.39,
+   "changePct": -0.4,
+   "asOf": "Nov 24, 2026 3:25 PM ET",
    "realTime": true,
    "status": "Open"
   },
@@ -17,10 +17,10 @@
    "symbol": "SATA",
    "name": "Strive, Inc. Variable Rate Series A Perpetual Preferred Stock",
    "exchange": "NASDAQ-GM",
-   "price": 89.14,
-   "change": -0.5529,
-   "changePct": -0.62,
-   "asOf": "Nov 24, 2026 2:28 PM ET",
+   "price": 89.16,
+   "change": -0.5329,
+   "changePct": -0.59,
+   "asOf": "Nov 24, 2026 3:25 PM ET",
    "realTime": true,
    "status": "Open"
   }
