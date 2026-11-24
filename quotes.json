@@ -1,5 +1,5 @@
 {
- "fetchedUtc": "2026-11-24T04:50:05Z",
+ "fetchedUtc": "2026-11-24T05:49:59Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF",
    "exchange": "NASDAQ-GM",
-   "price": 33.02,
-   "change": -2.06,
-   "changePct": -5.87,
-   "asOf": "Nov 20, 2026",
+   "price": 34.62,
+   "change": 1.6,
+   "changePct": 4.85,
+   "asOf": "Nov 23, 2026",
    "realTime": false,
    "status": "Closed",
    "source": "Nasdaq"
