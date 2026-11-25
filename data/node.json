@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-25T07:00:01Z",
+  "updated": "2026-11-25T07:15:01Z",
   "blocks": 977481,
   "headers": 977481,
   "progress": 1,
@@ -10,10 +10,10 @@
   "connections": 16,
   "connections_in": 6,
   "connections_out": 10,
-  "mempool_tx": 64121,
-  "mempool_bytes": 30418945,
+  "mempool_tx": 65995,
+  "mempool_bytes": 31089202,
   "mempool_minfee": 0.00000100,
-  "uptime_s": 27485,
-  "disk_free_bytes": 921937571840,
-  "cpu_temp_c": 58.2
+  "uptime_s": 28385,
+  "disk_free_bytes": 921935945728,
+  "cpu_temp_c": 57.1
 }
