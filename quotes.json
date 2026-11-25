@@ -1,15 +1,15 @@
 {
- "fetchedUtc": "2026-11-24T23:25:43Z",
+ "fetchedUtc": "2026-11-25T00:19:22Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
    "symbol": "STRC",
    "name": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock",
    "exchange": "NASDAQ-GS",
-   "price": 97.7,
+   "price": 97.77,
    "change": null,
    "changePct": null,
-   "asOf": "Nov 24, 2026 6:25 PM ET",
+   "asOf": "Nov 24, 2026 7:19 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -17,10 +17,10 @@
    "symbol": "SATA",
    "name": "Strive, Inc. Variable Rate Series A Perpetual Preferred Stock",
    "exchange": "NASDAQ-GM",
-   "price": 89.0,
+   "price": 89.44,
    "change": null,
    "changePct": null,
-   "asOf": "Nov 24, 2026 6:25 PM ET",
+   "asOf": "Nov 24, 2026 7:19 PM ET",
    "realTime": true,
    "status": "After-Hours"
   },
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF Shares",
    "exchange": "NASDAQ-GM",
-   "price": 33.92,
+   "price": 33.5728,
    "change": null,
    "changePct": null,
-   "asOf": "Nov 24, 2026 6:25 PM ET",
+   "asOf": "Nov 24, 2026 7:19 PM ET",
    "realTime": true,
    "status": "After-Hours",
    "source": "Nasdaq"
@@ -40,7 +40,7 @@
    "symbol": "IBIT280616C00050000",
    "name": "IBIT Jun 16 '28 $50 Call",
    "underlying": "IBIT",
-   "underlyingPrice": 33.92,
+   "underlyingPrice": 33.5728,
    "strike": 50.0,
    "expiry": "2028-06-16",
    "type": "call",
@@ -53,7 +53,7 @@
    "volume": null,
    "openInterest": 9066.0,
    "iv": null,
-   "asOfUtc": "2026-11-24T23:25:52Z",
+   "asOfUtc": "2026-11-25T00:19:30Z",
    "delayed": "15-min delayed (Nasdaq)",
    "source": "Nasdaq"
   }
