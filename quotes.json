@@ -1,15 +1,15 @@
 {
- "fetchedUtc": "2026-11-25T11:57:20Z",
+ "fetchedUtc": "2026-11-25T13:18:33Z",
  "source": "Nasdaq",
  "quotes": {
   "STRC": {
    "symbol": "STRC",
    "name": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock",
    "exchange": "NASDAQ-GS",
-   "price": 96.7,
-   "change": -1.01,
-   "changePct": -1.03,
-   "asOf": "Nov 25, 2026 6:56 AM ET",
+   "price": 96.86,
+   "change": -0.85,
+   "changePct": -0.87,
+   "asOf": "Nov 25, 2026 8:17 AM ET",
    "realTime": true,
    "status": "Pre-Market"
   },
@@ -17,10 +17,10 @@
    "symbol": "SATA",
    "name": "Strive, Inc. Variable Rate Series A Perpetual Preferred Stock",
    "exchange": "NASDAQ-GM",
-   "price": 89.14,
-   "change": -0.2529,
-   "changePct": -0.28,
-   "asOf": "Nov 25, 2026 6:55 AM ET",
+   "price": 88.48,
+   "change": -0.9129,
+   "changePct": -1.02,
+   "asOf": "Nov 25, 2026 8:18 AM ET",
    "realTime": true,
    "status": "Pre-Market"
   },
@@ -28,10 +28,10 @@
    "symbol": "IBIT",
    "name": "iShares Bitcoin Trust ETF Shares",
    "exchange": "NASDAQ-GM",
-   "price": 33.19,
-   "change": -0.57,
-   "changePct": -1.69,
-   "asOf": "Nov 25, 2026 6:57 AM ET",
+   "price": 33.15,
+   "change": -0.61,
+   "changePct": -1.81,
+   "asOf": "Nov 25, 2026 8:18 AM ET",
    "realTime": true,
    "status": "Pre-Market",
    "source": "Nasdaq"
@@ -53,7 +53,7 @@
    "volume": null,
    "openInterest": 9066.0,
    "iv": null,
-   "asOfUtc": "2026-11-25T11:57:27Z",
+   "asOfUtc": "2026-11-25T13:18:43Z",
    "delayed": "15-min delayed (Nasdaq)",
    "source": "Nasdaq"
   }
